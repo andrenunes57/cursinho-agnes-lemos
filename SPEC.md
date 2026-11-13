@@ -208,7 +208,7 @@ Formato de cada ADR: **contexto → decisão → alternativas descartadas**.
 
 | ID | Requisito | Prior. | Critério de aceite |
 |---|---|---|---|
-| RF-01 | Entrar com conta Google | P0 | O botão "Entrar com Google" leva ao consentimento do Google e volta logado. Não existe outra forma de login em produção. |
+| RF-01 | Entrar com conta Google | P0 | O botão "Entrar com Google" leva ao consentimento do Google e volta logado. Não existe outra forma de login em produção. Se o retorno trouxer `?error=`/`error_description` (ex.: `bad_oauth_state` quando a pessoa demora demais no Google), `/entrar` mostra uma mensagem amigável ("O login demorou demais ou foi cancelado. Tente de novo.") e limpa a URL. |
 | RF-02 | Primeiro acesso (onboarding) | P0 | No 1º login, a pessoa informa o **nome social** (obrigatório, 2–80 caracteres) e os **pronomes** (opcional). Ela aceita o **aviso de privacidade** (obrigatório, registra `consentimento_em`). Nenhum campo vem preenchido com dados do Google. |
 | RF-03 | Aguardar aprovação | P0 | Uma pessoa com status `pendente` ou `inativo` vê apenas a tela "Aguardando aprovação" (ou "Acesso desativado"), o próprio perfil e o botão de sair. A RLS impede leitura de qualquer outro dado. |
 | RF-04 | Editar o próprio perfil | P0 | A pessoa altera o nome social e os pronomes. Não consegue alterar o papel, o status nem o e-mail (garantido no banco). |
@@ -1067,7 +1067,7 @@ Todos estão na conta pessoal do dev (ADR-08). Nenhum valor abaixo é secreto.
 
 | Recurso | Identificador |
 |---|---|
-| Repositório GitHub (público) | `andrenunes57/cursinho-agnes-lemos`. Pages com origem **GitHub Actions**. |
+| Repositório GitHub (público) | `andrenunes57/cursinho-agnes-lemos`. Pages com origem **GitHub Actions**. O ambiente `github-pages` permite deploy **só do branch `main`**: a regra foi criada como `master`, quando o repositório ainda estava vazio, e foi corrigida. |
 | URL do app (Pages) | `https://andrenunes57.github.io/cursinho-agnes-lemos/` |
 | Supabase | Org "Cursinho Agnes Lemos" (Free) · projeto `cursinho-agnes-lemos` · ref `elxqckorrrwidoqgojfw` · `sa-east-1` · RLS automático ligado |
 | Supabase URL | `https://elxqckorrrwidoqgojfw.supabase.co` |
@@ -1136,6 +1136,7 @@ Todos estão na conta pessoal do dev (ADR-08). Nenhum valor abaixo é secreto.
   - `0003_rls_e_privilegios`
   - `0004_rpcs`
   - `0005_configuracoes_iniciais`
+- **Backfill obrigatório:** o trigger `on_auth_user_created` só vale para cadastros novos, e na F0 já houve login real na nuvem. A migration `0002` precisa também inserir em `perfis` (só `id` e `email`) as contas de `auth.users` que ainda não têm perfil.
 - **Seed:** 1 turma e ~8 disciplinas (Matemática, Português, Redação, História, Geografia, Biologia, Química, Física).
 - **pgTAP:** um arquivo por tabela + `rpcs.test.sql` + `rls_habilitada.test.sql` (§14.1).
 - **Tipos:** `npm run db:types`.
@@ -1422,6 +1423,8 @@ Guardar no Drive do cursinho, numa **pasta restrita à coordenação**. **Nunca*
 | 13/11/2026 | Autor dos commits neste repositório: Gmail pessoal do dev, e não o e-mail corporativo | Usuário |
 | 13/11/2026 | Lint com oxlint (padrão do create-vite 9), no lugar do ESLint; React Router 8, Vite 8, TypeScript 7, Vitest 5 (§6.5) | Implementação (F0) |
 | 13/11/2026 | Na F0, o `.env.local` aponta para o Supabase na nuvem para validar o login Google; troca para o stack local na F1 | Implementação (F0) |
+| 13/11/2026 | **F0 concluída.** App "Olá" publicado no Pages. Login Google validado em produção e em localhost (entrar e sair). CI e deploy verdes. Vitest 7/7. Playwright + axe 4/4 (celular e desktop). | Implementação (F0) |
+| 13/11/2026 | Aprendizados da F0: (1) a regra de deploy do ambiente `github-pages` precisou ser trocada de `master` para `main`; (2) um login demorado volta com `bad_oauth_state` na Site URL, então o RF-01 passou a exigir tratamento de `?error=`; (3) já existe usuário em `auth.users`, então a F1 faz backfill de `perfis` | Implementação (F0) |
 | _(F4)_ | Resultado do spike de CORS do Apps Script no celular | Implementação |
 
 ---

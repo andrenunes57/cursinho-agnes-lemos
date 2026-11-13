@@ -13,6 +13,8 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 - Recursos na nuvem e identificadores: SPEC §12.3.1.
 - `.env.local` aponta para o Supabase **na nuvem**, porque foi assim na F0. Na F1, trocar pelos
   valores do stack local (`npx supabase status`).
+- **Atenção na F1:** já existe uma conta real em `auth.users` na nuvem, criada no teste de login da F0.
+  A migration precisa fazer o backfill de `perfis` (SPEC §13, F1).
 
 ## Comandos
 
