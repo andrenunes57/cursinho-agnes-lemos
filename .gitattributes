@@ -1,0 +1,16 @@
+# Keep line endings stable so a session's diff shows only what it changed,
+# rather than the whole file. Without this, git's autocrlf rewrites files on
+# checkout and every runbook edit reads as a full rewrite.
+
+* text=auto
+
+# PowerShell: CRLF in the working copy (Windows PowerShell tooling expects it).
+*.ps1   text eol=crlf
+*.psm1  text eol=crlf
+*.psd1  text eol=crlf
+
+# Docs and data: LF. SPEC.md and CLAUDE.md were authored this way; forcing CRLF
+# would rewrite all ~1950 lines of SPEC.md in the next commit.
+*.md    text eol=lf
+*.json  text eol=lf
+*.yml   text eol=lf
