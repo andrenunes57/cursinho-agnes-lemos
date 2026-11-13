@@ -429,7 +429,7 @@ As versões exatas são fixadas na F0 e registradas no §6.5.
 | Banco/Auth/API | Supabase (Postgres, PostgREST, GoTrue) | CLI `supabase` como devDependency (`npx supabase …`) |
 | Arquivos | Google Apps Script (V8) + DriveApp | Versionado em `apps-script/` com `@google/clasp` |
 | Testes | pgTAP (`supabase test db`), Vitest + Testing Library, Playwright + `@axe-core/playwright` | §14 |
-| Qualidade | ESLint (template Vite) + `tsc -b` | — |
+| Qualidade | oxlint (padrão do template create-vite 9, no lugar do ESLint) + `tsc -b` | — |
 | CI/CD | GitHub Actions + GitHub Pages | §12.4 |
 | Datas | `Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo' })` | Sem biblioteca de datas |
 
@@ -474,21 +474,27 @@ As versões exatas são fixadas na F0 e registradas no §6.5.
 
 ### 6.5 Versões fixadas
 
-Preencher na F0 com as versões efetivamente instaladas. Depois disso, atualizar só deliberadamente.
+Versões instaladas na F0 (13/11/2026), todas exatas no `package.json` (`.npmrc` com `save-exact=true`). Depois disso, atualizar só deliberadamente.
 
 | Pacote | Versão |
 |---|---|
-| react / react-dom | _(F0)_ |
-| vite | _(F0)_ |
-| react-router | _(F0)_ |
-| @supabase/supabase-js | _(F0)_ |
-| @tanstack/react-query | _(F0)_ |
-| tailwindcss / @tailwindcss/vite | _(F0)_ |
-| supabase (CLI) | _(F0)_ |
-| vitest / @testing-library/react | _(F0)_ |
-| @playwright/test / @axe-core/playwright | _(F0)_ |
-| @google/clasp | _(F0)_ |
-| vite-plugin-pwa (P1) | _(F0)_ |
+| Node (local e CI, `.nvmrc`) | 26 |
+| react / react-dom | 19.3.1 |
+| vite / @vitejs/plugin-react | 8.3.8 / 6.3.0 |
+| typescript | 7.0.2 |
+| react-router | **8.5.1** (`createBrowserRouter` vem de `react-router`; `RouterProvider` vem de `react-router/dom`) |
+| @supabase/supabase-js | 2.119.0 |
+| @tanstack/react-query | 5.107.1 |
+| tailwindcss / @tailwindcss/vite | 4.3.5 |
+| supabase (CLI) | 3.1.0 |
+| vitest / jsdom | 5.1.0 / 31.0.1 |
+| @testing-library/react / jest-dom / user-event | 16.3.3 / 7.0.1 / 14.6.10 |
+| @playwright/test / @axe-core/playwright | 1.65.0 / 4.14.0 |
+| oxlint | 1.93.0 |
+| GitHub Actions | checkout@v7, setup-node@v7, configure-pages@v6, upload-pages-artifact@v5, deploy-pages@v5 |
+| @google/clasp | _(F4)_ — 3.4.1 era a mais recente na F0 |
+| vite-plugin-pwa (P1) | _(F7)_ |
+| lucide-react | _(F2)_ |
 
 ---
 
@@ -1110,7 +1116,7 @@ Todos estão na conta pessoal do dev (ADR-08). Nenhum valor abaixo é secreto.
   - criar o repositório no GitHub, adicionar o `remote` e ativar o Pages via Actions
   - criar o projeto Apps Script e ativar a "Apps Script API" em script.google.com/home/usersettings
 - **Claude:**
-  - scaffold do Vite `react-ts`, Tailwind, React Router, supabase-js, React Query, Vitest, Playwright, ESLint
+  - scaffold do Vite `react-ts`, Tailwind, React Router, supabase-js, React Query, Vitest, Playwright, oxlint
   - `npx supabase init`
   - estrutura de pastas do §6.4
   - `.gitignore` com os acréscimos do §5.6
@@ -1414,6 +1420,8 @@ Guardar no Drive do cursinho, numa **pasta restrita à coordenação**. **Nunca*
 | 13/11/2026 | Repositório `andrenunes57/cursinho-agnes-lemos` (público); contas e recursos da F0 provisionados (§12.3.1) | Usuário + setup via Claude in Chrome |
 | 13/11/2026 | Variáveis públicas do build no `.env.production` commitado, em vez de *variables* do GitHub | Usuário |
 | 13/11/2026 | Autor dos commits neste repositório: Gmail pessoal do dev, e não o e-mail corporativo | Usuário |
+| 13/11/2026 | Lint com oxlint (padrão do create-vite 9), no lugar do ESLint; React Router 8, Vite 8, TypeScript 7, Vitest 5 (§6.5) | Implementação (F0) |
+| 13/11/2026 | Na F0, o `.env.local` aponta para o Supabase na nuvem para validar o login Google; troca para o stack local na F1 | Implementação (F0) |
 | _(F4)_ | Resultado do spike de CORS do Apps Script no celular | Implementação |
 
 ---

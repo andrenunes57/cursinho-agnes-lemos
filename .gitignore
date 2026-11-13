@@ -299,3 +299,15 @@ docs/local_open/
 TestResults/
 testResults.xml
 coverage.xml
+# --- Cursinho Agnes Lemos (SPEC §5.6) ---
+dist/
+dist-ssr/
+supabase/.temp/
+supabase/.branches/
+.clasprc.json
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+# .env.production é intencionalmente versionado (só valores públicos — SPEC §12.3)
+!.env.production

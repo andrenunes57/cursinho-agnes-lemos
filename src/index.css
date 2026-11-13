@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* Tokens de cor (SPEC §5.3: contraste ≥ 4,5:1 para texto). Expandir na F2. */
+@theme {
+  --color-marca: #5b2a86;
+  --color-marca-escura: #43205f;
+}
+
+html {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Foco sempre visível (SPEC §5.3). */
+:focus-visible {
+  outline: 3px solid var(--color-marca);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
