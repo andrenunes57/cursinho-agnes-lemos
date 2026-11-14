@@ -1,0 +1,135 @@
+-- Fixtures comuns dos testes pgTAP (SPEC §14.1). Incluído por cada *.test.sql com `\ir _fixtures.psql`,
+-- DENTRO da transação do teste (tudo é desfeito no rollback). A extensão .psql impede que o
+-- `supabase test db` rode este arquivo como teste.
+--
+-- Pessoas (nome → papel/status):
+--   coord  coordenacao/ativo     prof   professor/ativo (aulas da Turma A)
+--   prof2  professor/ativo (Turma B)                     est    estudante/ativo (Turma A)
+--   est2   estudante/ativo (Turma B)                     inat   estudante/inativo (Turma A)
+--   pend   estudante/pendente (sem turma)
+-- Identidade: `select testes.entrar('est');` … `reset role;` · anon: `select testes.entrar_anon();`
+
+set local client_min_messages = warning;
+create extension if not exists pgtap with schema extensions;
+
+create schema testes;
+grant usage on schema testes to anon, authenticated;
+
+-- Ids fixos e legíveis por nome.
+create function testes.id(p_nome text) returns uuid language sql immutable as $$
+  select (case p_nome
+    when 'coord'          then 'c0000000-0000-4000-8000-000000000001'
+    when 'prof'           then 'd0000000-0000-4000-8000-000000000001'
+    when 'prof2'          then 'd0000000-0000-4000-8000-000000000002'
+    when 'est'            then 'e0000000-0000-4000-8000-000000000001'
+    when 'est2'           then 'e0000000-0000-4000-8000-000000000002'
+    when 'inat'           then 'e0000000-0000-4000-8000-000000000003'
+    when 'pend'           then 'f0000000-0000-4000-8000-000000000001'
+    when 'turma_a'        then 'a1000000-0000-4000-8000-000000000001'
+    when 'turma_b'        then 'a1000000-0000-4000-8000-000000000002'
+    when 'turma_inativa'  then 'a1000000-0000-4000-8000-000000000003'
+    when 'disciplina'     then 'b1000000-0000-4000-8000-000000000001'
+    when 'aula_passada'   then '1a000000-0000-4000-8000-000000000001'
+    when 'aula_futura'    then '1a000000-0000-4000-8000-000000000002'
+    when 'aula_b'         then '1a000000-0000-4000-8000-000000000003'
+    when 'arq_mat'        then '5a000000-0000-4000-8000-000000000001'
+    when 'arq_ent'        then '5a000000-0000-4000-8000-000000000002'
+    when 'arq_ent2'       then '5a000000-0000-4000-8000-000000000003'
+    when 'arq_solto'      then '5a000000-0000-4000-8000-000000000004'
+    when 'mat_rascunho'   then '3a000000-0000-4000-8000-000000000001'
+    when 'mat_publicado'  then '3a000000-0000-4000-8000-000000000002'
+    when 'mat_arquivo'    then '3a000000-0000-4000-8000-000000000003'
+    when 'tar_nota'       then '4a000000-0000-4000-8000-000000000001'
+    when 'tar_rascunho'   then '4a000000-0000-4000-8000-000000000002'
+    when 'tar_conceito'   then '4a000000-0000-4000-8000-000000000003'
+    when 'tar_devolutiva' then '4a000000-0000-4000-8000-000000000004'
+    when 'tar_b'          then '4a000000-0000-4000-8000-000000000005'
+    when 'ent_est'        then '6a000000-0000-4000-8000-000000000001'
+  end)::uuid;
+$$;
+
+-- Hoje no fuso do cursinho (a mesma regra de registrar_chamada).
+create function testes.hoje() returns date language sql stable as $$
+  select (now() at time zone 'America/Sao_Paulo')::date;
+$$;
+
+create function testes.entrar(p_nome text) returns void language plpgsql as $$
+begin
+  perform set_config('request.jwt.claims',
+    json_build_object('sub', testes.id(p_nome), 'role', 'authenticated')::text, true);
+  perform set_config('role', 'authenticated', true);
+end;
+$$;
+
+create function testes.entrar_anon() returns void language plpgsql as $$
+begin
+  perform set_config('request.jwt.claims', '{"role":"anon"}', true);
+  perform set_config('role', 'anon', true);
+end;
+$$;
+
+grant execute on all functions in schema testes to anon, authenticated;
+
+-- Pessoas: o trigger on_auth_user_created cria os perfis; papel/status são definidos como postgres.
+insert into auth.users (id, email, aud, role, raw_user_meta_data)
+select testes.id(n), n || '@teste.local', 'authenticated', 'authenticated',
+       '{"full_name":"Nome Google","avatar_url":"https://exemplo.invalid/foto.png"}'::jsonb
+  from unnest(array['coord', 'prof', 'prof2', 'est', 'est2', 'inat', 'pend']) n;
+
+update public.perfis p set
+  nome_social = initcap(v.n) || ' Teste',
+  papel = v.papel::public.papel_usuario,
+  status = v.status::public.status_usuario,
+  consentimento_em = now()
+from (values
+  ('coord', 'coordenacao', 'ativo'),
+  ('prof',  'professor',   'ativo'),
+  ('prof2', 'professor',   'ativo'),
+  ('est',   'estudante',   'ativo'),
+  ('est2',  'estudante',   'ativo'),
+  ('inat',  'estudante',   'inativo'),
+  ('pend',  'estudante',   'pendente')
+) v (n, papel, status)
+where p.id = testes.id(v.n);
+
+insert into public.turmas (id, nome, ano, ativa) values
+  (testes.id('turma_a'), 'Turma A', 2027, true),
+  (testes.id('turma_b'), 'Turma B', 2027, true),
+  (testes.id('turma_inativa'), 'Turma Encerrada', 2026, false);
+
+insert into public.matriculas (estudante_id, turma_id) values
+  (testes.id('est'), testes.id('turma_a')),
+  (testes.id('inat'), testes.id('turma_a')),
+  (testes.id('est2'), testes.id('turma_b'));
+
+insert into public.disciplinas (id, nome) values (testes.id('disciplina'), 'Disciplina de Teste');
+
+insert into public.aulas (id, turma_id, disciplina_id, professor_id, data, titulo) values
+  (testes.id('aula_passada'), testes.id('turma_a'), testes.id('disciplina'), testes.id('prof'), testes.hoje() - 1, 'Aula passada'),
+  (testes.id('aula_futura'), testes.id('turma_a'), testes.id('disciplina'), testes.id('prof'), testes.hoje() + 7, 'Aula futura'),
+  (testes.id('aula_b'), testes.id('turma_b'), testes.id('disciplina'), testes.id('prof2'), testes.hoje() - 1, 'Aula da Turma B');
+
+insert into public.arquivos (id, drive_file_id, nome, mime_type, tamanho_bytes, url_visualizacao, finalidade, conta_armazenamento, enviado_por) values
+  (testes.id('arq_mat'),   'drive-mat',   'lista.pdf',    'application/pdf', 1000, 'https://drive.google.com/file/d/drive-mat/view',   'material', 'drive-01', testes.id('prof')),
+  (testes.id('arq_ent'),   'drive-ent',   'resposta.jpg', 'image/jpeg',      2000, 'https://drive.google.com/file/d/drive-ent/view',   'entrega',  'drive-01', testes.id('est')),
+  (testes.id('arq_ent2'),  'drive-ent2',  'outra.jpg',    'image/jpeg',      2000, 'https://drive.google.com/file/d/drive-ent2/view',  'entrega',  'drive-01', testes.id('est2')),
+  (testes.id('arq_solto'), 'drive-solto', 'solto.pdf',    'application/pdf', 1000, 'https://drive.google.com/file/d/drive-solto/view', 'material', 'drive-01', testes.id('prof2'));
+
+insert into public.materiais (id, aula_id, tipo, titulo, conteudo, url, arquivo_id, publicado, ordem) values
+  (testes.id('mat_rascunho'),  testes.id('aula_passada'), 'texto',   'Planejamento', 'Roteiro da aula', null, null, false, 1),
+  (testes.id('mat_publicado'), testes.id('aula_passada'), 'link',    'Leitura', null, 'https://exemplo.invalid/texto', null, true, 2),
+  (testes.id('mat_arquivo'),   testes.id('aula_passada'), 'arquivo', 'Lista 1', null, null, testes.id('arq_mat'), true, 3);
+
+insert into public.tarefas (id, aula_id, titulo, tipo_avaliacao, opcoes_conceito, publicada, prazo) values
+  (testes.id('tar_nota'),       testes.id('aula_passada'), 'Exercícios',  'nota',       null, true,  now() + interval '7 days'),
+  (testes.id('tar_rascunho'),   testes.id('aula_passada'), 'Rascunho',    'nota',       null, false, null),
+  (testes.id('tar_conceito'),   testes.id('aula_passada'), 'Redação',     'conceito',   array['Satisfatório', 'Precisa revisar'], true, null),
+  (testes.id('tar_devolutiva'), testes.id('aula_passada'), 'Comentário',  'devolutiva', null, true,  null),
+  (testes.id('tar_b'),          testes.id('aula_b'),       'Tarefa B',    'nota',       null, true,  null);
+
+insert into public.entregas (id, tarefa_id, estudante_id, arquivo_id, comentario) values
+  (testes.id('ent_est'), testes.id('tar_nota'), testes.id('est'), testes.id('arq_ent'), 'Minha resposta');
+
+insert into public.presencas (aula_id, estudante_id, status, registrado_por) values
+  (testes.id('aula_passada'), testes.id('est'), 'presente', testes.id('prof')),
+  (testes.id('aula_b'), testes.id('est2'), 'ausente', testes.id('prof2'));

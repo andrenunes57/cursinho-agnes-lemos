@@ -9,12 +9,12 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 
 ## Estado atual
 
-- **F0 concluída** (13/11/2026). **Próxima: F1** (banco, RLS, RPCs, seed e pgTAP), seções §8 e §9.
+- **F0 concluída** (13/11/2026). **F1:** código e pgTAP concluídos (`db:test` 244/244); **falta o
+  `npx supabase db push --remote`** para a nuvem. **Próxima: F2** (auth, onboarding e layout), §7 e §11.
 - Recursos na nuvem e identificadores: SPEC §12.3.1.
-- `.env.local` aponta para o Supabase **na nuvem**, porque foi assim na F0. Na F1, trocar pelos
-  valores do stack local (`npx supabase status`).
-- **Atenção na F1:** já existe uma conta real em `auth.users` na nuvem, criada no teste de login da F0.
-  A migration precisa fazer o backfill de `perfis` (SPEC §13, F1).
+- `.env.local` aponta para o stack **local** do Supabase (`npx supabase status`).
+- **CLI 3.x:** `db push`, `db test`, `migration list` etc. vão para o stack **local** por padrão.
+  Para a nuvem, passar `--remote`.
 
 ## Comandos
 
@@ -24,7 +24,7 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 | Qualidade (o mesmo que o CI roda) | `npm run lint && npm run typecheck && npm test && npm run build` |
 | E2E + acessibilidade (axe) | `npm run test:e2e` (build + preview na porta 4173) |
 | Banco local (Docker/Rancher Desktop ligado) | `npm run db:start` · `npm run db:reset` · `npm run db:test` · `npm run db:types` |
-| Aplicar migrations na nuvem | `npx supabase db push` (projeto já vinculado; pode pedir a senha do banco) |
+| Aplicar migrations na nuvem | `npx supabase db push --remote` (sem `--remote` o CLI 3.x vai para o stack local) |
 
 ## Regras (resumo do SPEC §15)
 

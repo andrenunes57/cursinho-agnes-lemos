@@ -1055,7 +1055,7 @@ VITE_API_ARQUIVOS_URL=<url /exec do Apps Script de desenvolvimento ou produção
 - **Supabase:**
   - **Authentication → Providers:** Google ligado (client id/secret); Email **desligado**.
   - **URL Configuration:** Site URL = `https://<usuario>.github.io/<repo>/`; Redirect URLs = essa mesma + `http://localhost:5173/**`.
-  - **Migrations:** `npx supabase link` + `npx supabase db push`.
+  - **Migrations:** `npx supabase link` + `npx supabase db push --remote`. No CLI 3.x, sem `--remote` o comando vai para o stack local.
 - **Front-end:** `vite.config.ts` com `base: '/<repo>/'`.
 - **Cliente Supabase:** `createClient(url, publishableKey, { auth: { flowType: 'pkce' } })`.
 - **Login:** `signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + import.meta.env.BASE_URL } })`.
@@ -1425,6 +1425,7 @@ Guardar no Drive do cursinho, numa **pasta restrita à coordenação**. **Nunca*
 | 13/11/2026 | Na F0, o `.env.local` aponta para o Supabase na nuvem para validar o login Google; troca para o stack local na F1 | Implementação (F0) |
 | 13/11/2026 | **F0 concluída.** App "Olá" publicado no Pages. Login Google validado em produção e em localhost (entrar e sair). CI e deploy verdes. Vitest 7/7. Playwright + axe 4/4 (celular e desktop). | Implementação (F0) |
 | 13/11/2026 | Aprendizados da F0: (1) a regra de deploy do ambiente `github-pages` precisou ser trocada de `master` para `main`; (2) um login demorado volta com `bad_oauth_state` na Site URL, então o RF-01 passou a exigir tratamento de `?error=`; (3) já existe usuário em `auth.users`, então a F1 faz backfill de `perfis` | Implementação (F0) |
+| 13/11/2026 | **F1:** 5 migrations, seed e pgTAP (13 arquivos, 244 testes verdes); tipos gerados. Aprendizado: no Supabase CLI 3.x, `db push` vai para o **stack local** por padrão e não pede senha; para a nuvem é `db push --remote` (§12.3) | Implementação (F1) |
 | _(F4)_ | Resultado do spike de CORS do Apps Script no celular | Implementação |
 
 ---
