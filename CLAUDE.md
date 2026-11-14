@@ -9,11 +9,8 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 
 ## Estado atual
 
-- **F0 concluída** (13/11/2026). **F1:** código e pgTAP concluídos (`db:test` 244/244); **falta o
-  `npx supabase db push --remote`** para a nuvem.
-- **F2 implementada** (auth, onboarding, layout por papel): Vitest 34/34, E2E + axe 28/28.
-  Falta a verificação manual em produção (login Google → onboarding → aguardando → SQL do §16.1 →
-  menu da coordenação). **Próxima: F3** (coordenação), §4.2 e §11.
+- **F0, F1 e F2 concluídas** (13/11/2026). As 5 migrations estão na nuvem. A conta do dev já é
+  coordenação ativa em produção (§16.1). **Próxima: F3** (coordenação), §4.2 e §11.
 - Rotas das F3 a F6 já estão em `src/router.tsx` com `provisoria(...)`: trocar pela página real.
 - E-mail de contato da LGPD pendente em `src/lib/contato.ts` (trocar antes do go-live).
 - Recursos na nuvem e identificadores: SPEC §12.3.1.

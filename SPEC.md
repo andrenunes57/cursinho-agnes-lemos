@@ -1429,6 +1429,8 @@ Guardar no Drive do cursinho, numa **pasta restrita à coordenação**. **Nunca*
 | 13/11/2026 | **F2:** o e-mail de contato do cursinho para a LGPD ainda não existe. `/privacidade` mostra um marcador ("a definir"), definido numa constante única (`src/lib/contato.ts`). **Trocar antes do go-live.** | Usuário |
 | 13/11/2026 | F2: as rotas das F3 a F6 já existem com as guardas de papel, apontando para uma página "em construção" que cada fase substitui. No celular, a barra inferior mostra os 4 primeiros itens do menu + "Menu" com todos. | Implementação (F2) |
 | 13/11/2026 | F2: `npm run test:e2e` passa a exigir o stack local (`npm run db:start`). O `playwright.config.ts` lê `supabase status` e faz o build com a URL e a chave publishable locais. O global-setup cria as contas `*@teste.local` (§14.3), e o onboarding usa uma conta nova por projeto (`novo-celular`, `novo-desktop`). | Implementação (F2) |
+| 13/11/2026 | **F1 concluída:** `db push --remote` aplicou as 5 migrations na nuvem (`migration list --remote` confere). | Usuário |
+| 13/11/2026 | **F2 concluída.** Vitest 34/34; E2E + axe 28/28 (celular e desktop); conferência em 375 px. Em produção, via Claude in Chrome: login Google → primeiro acesso → "Aguardando" → SQL do §16.1 no SQL Editor → a conta vê o menu da coordenação. | Implementação (F2) |
 | _(F4)_ | Resultado do spike de CORS do Apps Script no celular | Implementação |
 
 ---
