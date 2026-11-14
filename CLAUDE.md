@@ -10,8 +10,14 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 ## Estado atual
 
 - **F0, F1 e F2 concluídas** (13/11/2026). As 5 migrations estão na nuvem. A conta do dev já é
-  coordenação ativa em produção (§16.1). **Próxima: F3** (coordenação), §4.2 e §11.
-- Rotas das F3 a F6 já estão em `src/router.tsx` com `provisoria(...)`: trocar pela página real.
+  coordenação ativa em produção (§16.1).
+- **F3 implementada** (telas da coordenação, DoD local verde). Falta validar em produção (2ª conta
+  como estudante, 3ª como docente, aulas para ela). **Depois: F4** (§4.3, §10).
+- Rotas das F4 a F6 já estão em `src/router.tsx` com `provisoria(...)`: trocar pela página real.
+- Reutilizar da F3: `components/AulaForm.tsx` (sem `docentes` = docente criando a própria aula),
+  `ui/Abas`, `ui/Select`, `ui/Confirmacao`, `ui/Etiqueta`, `lib/datas.ts`, `lib/erros.ts`.
+- Depois de rodar o E2E, o pgTAP exige `npm run db:reset && npm run db:test` (as fixtures colidem
+  com as contas do E2E).
 - E-mail de contato da LGPD pendente em `src/lib/contato.ts` (trocar antes do go-live).
 - Recursos na nuvem e identificadores: SPEC §12.3.1.
 - `.env.local` aponta para o stack **local** do Supabase (`npx supabase status`).
