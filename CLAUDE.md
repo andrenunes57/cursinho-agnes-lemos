@@ -16,8 +16,8 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 - **F4 concluída** (14/11/2026): API de Arquivos implantada; upload validado no desktop e no Chrome
   Android (PDF + foto da câmera).
 - **F5 concluída** (14/11/2026), validada em produção nos 3 tipos de avaliação.
-- **F6 implementada** (14/11/2026), com o DoD local verde. Falta validar em produção: chamada e correção
-  pela "Docente Produção", frequência da "Estudante Produção", relatório + CSV e Armazenamento da coordenação. Depois: **F7**.
+- **F6 concluída** (14/11/2026), validada em produção: chamada e correção, % (50% em 2 aulas), CSV,
+  coordenação só leitura com a RPC recusando e Armazenamento. Próxima: **F7**.
 - Testes que importam (direta ou indiretamente) `lib/supabase` precisam de `vi.mock('../lib/supabase', ...)`:
   no CI não há `.env.local`. Para reproduzir o CI: `VITE_SUPABASE_URL= npx vitest run`.
 - API de Arquivos: `npm run gas:push` e depois `npx clasp create-deployment -i <deployment id>` (§12.3.1),

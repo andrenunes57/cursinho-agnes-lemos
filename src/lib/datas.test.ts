@@ -53,6 +53,12 @@ describe('ehDataISO', () => {
     expect(ehDataISO('16/11/2026')).toBe(false)
     expect(ehDataISO(null)).toBe(false)
   })
+
+  it('aceita anos de 0 a 99, que o campo de data produz enquanto o ano é digitado', () => {
+    expect(ehDataISO('0002-11-14')).toBe(true)
+    expect(ehDataISO('0020-02-29')).toBe(true)
+    expect(ehDataISO('0021-02-29')).toBe(false)
+  })
 })
 
 describe('formatação', () => {
