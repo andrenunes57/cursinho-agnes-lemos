@@ -79,3 +79,58 @@ export function validarUrl(valor: string): string | null {
   if (!valor.trim()) return 'Informe o link.'
   return ehUrlHttp(valor) ? null : 'Use um link completo, começando com https://.'
 }
+
+// Tarefas e entregas (SPEC §8.3). Título e instruções não têm CHECK no banco: limite de UI.
+// O comentário da entrega tem CHECK de 2000 caracteres (`entregas_comentario_tamanho`).
+export const TITULO_TAREFA_MIN = 2
+export const TITULO_TAREFA_MAX = 120
+export const INSTRUCOES_MAX = 5000
+export const COMENTARIO_MAX = 2000
+export const DEVOLUTIVA_MAX = 5000
+export const CONCEITOS_MAX = 10
+export const CONCEITO_MAX = 40
+export const CONCEITOS_PADRAO = ['Satisfatório', 'Precisa revisar']
+
+export function validarTituloTarefa(valor: string): string | null {
+  return validarTexto(valor, TITULO_TAREFA_MIN, TITULO_TAREFA_MAX, 'Informe o título da tarefa.')
+}
+
+/** Texto com no máximo `max` caracteres (vazio é válido). */
+export function validarMaximo(valor: string, max: number): string | null {
+  return valor.trim().length > max ? `Use no máximo ${max} caracteres.` : null
+}
+
+/** "7,5" ou "7.5" → 7.5. null se não for uma nota de 0 a 10 com até uma casa decimal. */
+export function lerNota(texto: string): number | null {
+  const t = texto.trim().replace(',', '.')
+  if (!/^\d{1,2}(\.\d)?$/.test(t)) return null
+  const nota = Number(t)
+  return nota >= 0 && nota <= 10 ? nota : null
+}
+
+export function validarNota(texto: string): string | null {
+  if (!texto.trim()) return 'Informe a nota.'
+  return lerNota(texto) === null ? 'Use uma nota de 0 a 10, com até uma casa decimal (ex.: 7,5).' : null
+}
+
+/** Opções de conceito digitadas uma por linha, sem linhas vazias. */
+export function conceitosDoTexto(texto: string): string[] {
+  return texto
+    .split('\n')
+    .map((linha) => linha.trim())
+    .filter(Boolean)
+}
+
+export function validarConceitos(texto: string): string | null {
+  const conceitos = conceitosDoTexto(texto)
+  if (conceitos.length === 0) return 'Escreva pelo menos um conceito, um por linha.'
+  if (conceitos.length > CONCEITOS_MAX) return `Use no máximo ${CONCEITOS_MAX} conceitos.`
+  if (conceitos.some((c) => c.length > CONCEITO_MAX)) return `Cada conceito pode ter no máximo ${CONCEITO_MAX} caracteres.`
+  if (new Set(conceitos.map((c) => c.toLocaleLowerCase('pt-BR'))).size !== conceitos.length) return 'Há conceitos repetidos.'
+  return null
+}
+
+/** Nota em pt-BR: 7.5 → "7,5". */
+export function formatarNota(nota: number): string {
+  return nota.toLocaleString('pt-BR', { maximumFractionDigits: 1 })
+}

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-type Tom = 'neutro' | 'sucesso' | 'alerta' | 'marca'
+export type Tom = 'neutro' | 'sucesso' | 'alerta' | 'marca'
 
 const estilos: Record<Tom, string> = {
   neutro: 'border-borda-forte text-texto-suave',

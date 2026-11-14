@@ -91,3 +91,56 @@ export function formatarQuando(data: string, inicio: string | null): string {
   const hora = formatarHora(inicio)
   return hora ? `${dia}, às ${hora}` : dia
 }
+
+// ---------------------------------------------------------------------------
+// Prazos (timestamptz) — F5. O campo do formulário é um `datetime-local` em hora de São Paulo.
+// ---------------------------------------------------------------------------
+const fmtOffset = new Intl.DateTimeFormat('en-US', { timeZone: FUSO, timeZoneName: 'longOffset' })
+
+/** Offset de São Paulo no instante dado, como "-03:00". */
+function offsetSP(instante: Date): string {
+  const nome = fmtOffset.formatToParts(instante).find((p) => p.type === 'timeZoneName')?.value ?? ''
+  return /GMT([+-]\d{2}:\d{2})/.exec(nome)?.[1] ?? '+00:00'
+}
+
+/** "2026-11-20T23:59" (hora de São Paulo) → ISO em UTC. null se o texto não for uma data/hora válida. */
+export function prazoParaISO(local: string): string | null {
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(local) || !ehDataISO(local.slice(0, 10))) return null
+  const [hora, minuto] = local.slice(11).split(':').map(Number)
+  if (hora > 23 || minuto > 59) return null
+  // O offset depende do instante (horário de verão, se um dia voltar): aproxima e corrige.
+  const aproximado = new Date(`${local}:00-03:00`)
+  return new Date(`${local}:00${offsetSP(aproximado)}`).toISOString()
+}
+
+const partesDataHora = new Intl.DateTimeFormat('en-CA', {
+  timeZone: FUSO,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
+})
+
+/** ISO → "2026-11-20T23:59" em hora de São Paulo (valor do `datetime-local`). */
+export function isoParaCampoPrazo(iso: string): string {
+  const p = Object.fromEntries(partesDataHora.formatToParts(new Date(iso)).map((x) => [x.type, x.value]))
+  return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`
+}
+
+/** ISO → "Sexta-feira, 20 de novembro, às 23:59" (hora de São Paulo). */
+export function formatarDataHora(iso: string): string {
+  const local = isoParaCampoPrazo(iso)
+  return formatarQuando(local.slice(0, 10), local.slice(11))
+}
+
+/** Entrega "atrasada" (SPEC §8.3): enviada depois do prazo. Sem prazo, nunca atrasa. */
+export function estaAtrasada(enviadaEm: string, prazo: string | null): boolean {
+  return prazo !== null && new Date(enviadaEm).getTime() > new Date(prazo).getTime()
+}
+
+/** O prazo já passou? Sem prazo, nunca passa. */
+export function prazoEncerrado(prazo: string | null, agora: Date = new Date()): boolean {
+  return prazo !== null && agora.getTime() > new Date(prazo).getTime()
+}

@@ -1,11 +1,13 @@
 import { Link } from 'react-router'
 import { useAuth } from '../auth/contexto'
 import { CartaoAula } from '../components/CartaoAula'
+import { CartaoTarefa } from '../components/CartaoTarefa'
 import { Carregando } from '../components/ui/Carregando'
 import { EmptyState } from '../components/ui/EmptyState'
 import { ErroComRetry } from '../components/ui/ErroComRetry'
 import { hojeSP } from '../lib/datas'
 import { separarPorData, useAulas, useNomeDocente, type Aula } from './consultasAulas'
+import { porPrazo, situacaoDaEntrega, useEntregasAguardando, useMinhasTarefas } from './consultasTarefas'
 
 const QUANTAS = 5
 const classeLink = 'min-h-11 content-center self-start font-semibold text-marca underline underline-offset-4'
@@ -22,7 +24,81 @@ function Lista({ aulas, para, hoje, docente }: { aulas: Aula[]; para: (a: Aula) 
   )
 }
 
-/** Início da estudante: aulas de hoje e as próximas (SPEC §11). Tarefas pendentes chegam na F5. */
+/** Tarefas ainda sem entrega, pelo prazo mais próximo (Início da estudante). */
+function TarefasPendentes({ uid }: { uid: string | undefined }) {
+  const tarefas = useMinhasTarefas(uid)
+  let conteudo
+  if (tarefas.isPending) conteudo = <Carregando texto="Carregando suas tarefas…" />
+  else if (tarefas.isError) {
+    conteudo = <ErroComRetry mensagem="Não foi possível carregar suas tarefas." onTentarDeNovo={() => void tarefas.refetch()} />
+  } else {
+    const pendentes = tarefas.data.filter((t) => situacaoDaEntrega(t.entregas[0], t.prazo) === 'pendente').sort(porPrazo)
+    conteudo =
+      pendentes.length === 0 ? (
+        <EmptyState titulo="Nenhuma tarefa pendente" />
+      ) : (
+        <ul className="flex flex-col gap-3">
+          {pendentes.slice(0, QUANTAS).map((t) => (
+            <li key={t.id}>
+              <CartaoTarefa
+                tarefa={t}
+                situacao="pendente"
+                aula={{ titulo: t.aulas.titulo, data: t.aulas.data, disciplina: t.aulas.disciplinas.nome }}
+              />
+            </li>
+          ))}
+        </ul>
+      )
+  }
+  return (
+    <section aria-labelledby="titulo-tarefas-pendentes" className="flex flex-col gap-3">
+      <h2 id="titulo-tarefas-pendentes" className="text-xl font-semibold">
+        Tarefas pendentes
+      </h2>
+      {conteudo}
+      <Link to="/tarefas" className={classeLink}>
+        Ver todas as tarefas
+      </Link>
+    </section>
+  )
+}
+
+/** Início docente: tarefas das próprias aulas com entregas aguardando avaliação (SPEC §11). */
+function EntregasAguardando({ uid, somenteSeHouver }: { uid: string | undefined; somenteSeHouver: boolean }) {
+  const tarefas = useEntregasAguardando(uid)
+  if (tarefas.isPending) return somenteSeHouver ? null : <Carregando texto="Carregando entregas…" />
+  if (tarefas.isError) {
+    return somenteSeHouver ? null : (
+      <ErroComRetry mensagem="Não foi possível carregar as entregas." onTentarDeNovo={() => void tarefas.refetch()} />
+    )
+  }
+  if (somenteSeHouver && tarefas.data.length === 0) return null
+  return (
+    <section aria-labelledby="titulo-aguardando" className="flex flex-col gap-3">
+      <h2 id="titulo-aguardando" className="text-xl font-semibold">
+        Entregas aguardando avaliação
+      </h2>
+      {tarefas.data.length === 0 ? (
+        <EmptyState titulo="Nenhuma entrega aguardando avaliação" />
+      ) : (
+        <ul className="flex flex-col gap-2">
+          {tarefas.data.map((t) => (
+            <li key={t.id} className="flex flex-wrap items-baseline gap-x-2">
+              <Link to={`/docente/tarefas/${t.id}/entregas`} className={classeLink}>
+                {t.titulo}
+              </Link>
+              <span className="text-sm text-texto-suave">
+                {t.aulas.titulo} · {t.entregas.length} aguardando
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
+}
+
+/** Início da estudante: aulas de hoje, tarefas pendentes e próximas aulas (SPEC §11). */
 export function InicioEstudante() {
   const { perfil } = useAuth()
   const aulas = useAulas('turmas', perfil?.id)
@@ -52,6 +128,7 @@ export function InicioEstudante() {
           <Lista aulas={deHoje} para={para} hoje={hoje} docente={docente} />
         )}
       </section>
+      <TarefasPendentes uid={perfil?.id} />
       <section aria-labelledby="titulo-seguintes" className="flex flex-col gap-3">
         <h2 id="titulo-seguintes" className="text-xl font-semibold">
           Próximas aulas
@@ -70,10 +147,10 @@ export function InicioEstudante() {
 }
 
 /**
- * Início docente: as próximas aulas da pessoa (SPEC §11). Entregas aguardando avaliação chegam
- * na F5. Para a coordenação, só aparece quando ela tem aulas próximas.
+ * Próximas aulas da pessoa docente (SPEC §11). Para a coordenação, só aparece quando ela tem
+ * aulas próximas.
  */
-export function InicioDocente({ somenteSeHouver = false }: { somenteSeHouver?: boolean }) {
+function ProximasAulasDocente({ somenteSeHouver }: { somenteSeHouver: boolean }) {
   const { perfil } = useAuth()
   const aulas = useAulas('minhas', perfil?.id)
   const hoje = hojeSP()
@@ -104,5 +181,16 @@ export function InicioDocente({ somenteSeHouver = false }: { somenteSeHouver?: b
         Ver minhas aulas
       </Link>
     </section>
+  )
+}
+
+/** Início docente: entregas aguardando avaliação + próximas aulas. */
+export function InicioDocente({ somenteSeHouver = false }: { somenteSeHouver?: boolean }) {
+  const { perfil } = useAuth()
+  return (
+    <>
+      <EntregasAguardando uid={perfil?.id} somenteSeHouver={somenteSeHouver} />
+      <ProximasAulasDocente somenteSeHouver={somenteSeHouver} />
+    </>
   )
 }

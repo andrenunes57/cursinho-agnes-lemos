@@ -182,7 +182,7 @@ export function MateriaisDocente({ aula, podeEditar, podeExcluir, avisar }: Prop
                         <>
                           <Button
                             variante={m.publicado ? 'secundario' : 'primario'}
-                            aria-label={m.publicado ? `Voltar ${m.titulo} para rascunho` : `Publicar ${m.titulo}`}
+                            aria-label={m.publicado ? `Voltar para rascunho: ${m.titulo}` : `Publicar ${m.titulo}`}
                             disabled={ocupado}
                             onClick={() => publicar.mutate({ m, publicado: !m.publicado })}
                           >

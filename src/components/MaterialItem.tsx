@@ -1,11 +1,10 @@
 import { FileText, Link2, CirclePlay, StickyNote } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { formatarTamanho } from '../lib/arquivos'
-import { partesComLinks } from '../lib/texto'
-import { ehUrlHttp } from '../lib/validacoes'
 import { idDoYoutube, urlEmbutida } from '../lib/youtube'
 import type { Material } from '../pages/consultasAulas'
 import type { Enums } from '../types/database'
+import { LinkExterno, TextoComLinks } from './LinkExterno'
 
 const ROTULO_TIPO: Record<Enums<'tipo_material'>, string> = {
   arquivo: 'Arquivo',
@@ -15,19 +14,6 @@ const ROTULO_TIPO: Record<Enums<'tipo_material'>, string> = {
 }
 
 const ICONES = { arquivo: FileText, link: Link2, video: CirclePlay, texto: StickyNote }
-
-const classeLink = 'font-semibold text-marca underline underline-offset-4 hover:text-marca-escura'
-
-/** Link que abre em nova aba, avisando o leitor de tela. Só aceita http(s). */
-function LinkExterno({ href, children }: { href: string; children: ReactNode }) {
-  if (!ehUrlHttp(href)) return <span className="break-all">{children}</span>
-  return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={`break-all ${classeLink}`}>
-      {children}
-      <span className="sr-only"> (abre em nova aba)</span>
-    </a>
-  )
-}
 
 function Conteudo({ material }: { material: Material }) {
   switch (material.tipo) {
@@ -61,19 +47,7 @@ function Conteudo({ material }: { material: Material }) {
       )
     }
     case 'texto':
-      return (
-        <p className="whitespace-pre-wrap break-words">
-          {partesComLinks(material.conteudo ?? '').map((parte, i) =>
-            parte.tipo === 'link' ? (
-              <LinkExterno key={i} href={parte.valor}>
-                {parte.valor}
-              </LinkExterno>
-            ) : (
-              <span key={i}>{parte.valor}</span>
-            ),
-          )}
-        </p>
-      )
+      return <TextoComLinks texto={material.conteudo ?? ''} />
   }
 }
 

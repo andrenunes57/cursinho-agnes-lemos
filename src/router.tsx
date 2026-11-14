@@ -10,9 +10,12 @@ import { Pessoas } from './pages/coordenacao/Pessoas'
 import { Turmas } from './pages/coordenacao/Turmas'
 import { PrimeiroAcesso } from './pages/acesso/PrimeiroAcesso'
 import { AulaDocente } from './pages/docente/AulaDocente'
+import { EntregasTarefa } from './pages/docente/EntregasTarefa'
 import { MinhasAulas } from './pages/docente/MinhasAulas'
 import { Aula } from './pages/estudante/Aula'
 import { Aulas } from './pages/estudante/Aulas'
+import { Tarefa } from './pages/estudante/Tarefa'
+import { Tarefas } from './pages/estudante/Tarefas'
 import { EmConstrucao } from './pages/EmConstrucao'
 import { Inicio } from './pages/Inicio'
 import { NaoEncontrado } from './pages/NaoEncontrado'
@@ -23,7 +26,7 @@ import { Privacidade } from './pages/publico/Privacidade'
 // basename = base do Vite sem a barra final ('/cursinho-agnes-lemos'). SPEC §6.3 / §12.3.
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
 
-/** Rotas das fases F5 e F6, por enquanto com a página "em construção" (SPEC §11, §13). */
+/** Rotas da fase F6, por enquanto com a página "em construção" (SPEC §11, §13). */
 const provisoria = (path: string, titulo: string): RouteObject => ({
   path,
   element: <EmConstrucao titulo={titulo} />,
@@ -56,8 +59,8 @@ export const rotas: RouteObject[] = [
                     children: [
                       { path: '/aulas', element: <Aulas /> },
                       { path: '/aulas/:id', element: <Aula /> },
-                      provisoria('/tarefas', 'Tarefas'),
-                      provisoria('/tarefas/:id', 'Tarefa'),
+                      { path: '/tarefas', element: <Tarefas /> },
+                      { path: '/tarefas/:id', element: <Tarefa /> },
                       provisoria('/frequencia', 'Minha frequência'),
                     ],
                   },
@@ -66,7 +69,7 @@ export const rotas: RouteObject[] = [
                     children: [
                       { path: '/docente/aulas', element: <MinhasAulas /> },
                       { path: '/docente/aulas/:id', element: <AulaDocente /> },
-                      provisoria('/docente/tarefas/:id/entregas', 'Entregas'),
+                      { path: '/docente/tarefas/:id/entregas', element: <EntregasTarefa /> },
                       provisoria('/docente/frequencia', 'Frequência das minhas aulas'),
                     ],
                   },

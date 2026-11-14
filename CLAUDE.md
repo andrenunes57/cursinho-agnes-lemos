@@ -14,11 +14,15 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 - **F3 concluída** (13/11/2026), também validada em produção: Turma 2027, 8 disciplinas, contas
   "Estudante Produção" e "Docente Produção" aprovadas e 2 aulas da docente.
 - **F4** (14/11/2026): código no ar, API de Arquivos implantada e URL gravada em produção; spike de
-  CORS no desktop aprovado. Falta o teste no Android (PDF e foto pelo celular). **Em andamento: F5** (§4.4, §9.4).
+  CORS no desktop aprovado. Falta o teste no Android (PDF e foto pelo celular).
+- **F5 implementada** (14/11/2026, DoD local verde); falta o ciclo em produção (docente → estudante →
+  avaliação). Depois: **F6** (§4.5).
 - API de Arquivos: `npm run gas:push` e depois `npx clasp create-deployment -i <deployment id>` (§12.3.1),
   **sempre com `-i`** para não mudar a URL `/exec`.
 - No Chrome do dev, serviços Google do projeto (Drive, Apps Script) ficam na conta de índice 1: usar `/u/1/`.
-- Rotas das F5 e F6 ainda estão em `src/router.tsx` com `provisoria(...)`: trocar pela página real.
+- Rotas da F6 ainda estão em `src/router.tsx` com `provisoria(...)`: trocar pela página real.
+- Reutilizar da F5: `pages/consultasTarefas.ts` (situação da entrega, `useEstudantesDaTurma`),
+  `components/LinkExterno.tsx`, `lib/datas.ts` (prazos em hora de SP).
 - Reutilizar da F3: `components/AulaForm.tsx` (sem `docentes` = docente criando a própria aula),
   `ui/Abas`, `ui/Select`, `ui/Confirmacao`, `ui/Etiqueta`, `lib/datas.ts`, `lib/erros.ts`.
 - Depois de rodar o E2E, o pgTAP exige `npm run db:reset && npm run db:test` (as fixtures colidem

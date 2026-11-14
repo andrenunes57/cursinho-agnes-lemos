@@ -1,10 +1,12 @@
 import { Link, useParams } from 'react-router'
+import { CartaoTarefa } from '../../components/CartaoTarefa'
 import { MaterialItem } from '../../components/MaterialItem'
 import { Carregando } from '../../components/ui/Carregando'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { ErroComRetry } from '../../components/ui/ErroComRetry'
 import { formatarQuando } from '../../lib/datas'
 import { useAula, useMateriais, useNomeDocente } from '../consultasAulas'
+import { situacaoDaEntrega, useTarefasDaAula } from '../consultasTarefas'
 
 const classeLink = 'font-semibold text-marca underline underline-offset-4'
 
@@ -33,7 +35,26 @@ function Materiais({ aulaId }: { aulaId: string }) {
   )
 }
 
-/** /aulas/:id — dados da aula + materiais publicados (as tarefas entram na F5). */
+/** Tarefas publicadas da aula, com a situação da própria entrega (a RLS esconde rascunhos e entregas alheias). */
+function Tarefas({ aulaId }: { aulaId: string }) {
+  const tarefas = useTarefasDaAula(aulaId)
+  if (tarefas.isPending) return <Carregando texto="Carregando tarefas…" />
+  if (tarefas.isError) {
+    return <ErroComRetry mensagem="Não foi possível carregar as tarefas." onTentarDeNovo={() => void tarefas.refetch()} />
+  }
+  if (tarefas.data.length === 0) return <EmptyState titulo="Nenhuma tarefa nesta aula" />
+  return (
+    <ul className="flex flex-col gap-3">
+      {tarefas.data.map((t) => (
+        <li key={t.id}>
+          <CartaoTarefa tarefa={t} situacao={situacaoDaEntrega(t.entregas[0], t.prazo)} />
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+/** /aulas/:id — dados da aula + materiais e tarefas publicados (SPEC §11). */
 export function Aula() {
   const { id } = useParams()
   const aula = useAula(id)
@@ -72,6 +93,12 @@ export function Aula() {
             Materiais
           </h2>
           <Materiais aulaId={a.id} />
+        </section>
+        <section aria-labelledby="titulo-tarefas" className="flex flex-col gap-3">
+          <h2 id="titulo-tarefas" className="text-xl font-semibold">
+            Tarefas
+          </h2>
+          <Tarefas aulaId={a.id} />
         </section>
       </>
     )
