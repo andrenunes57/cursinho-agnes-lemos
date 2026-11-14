@@ -17,7 +17,7 @@
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
     "db:types": "supabase gen types typescript --local > src/types/database.ts",
-    "gas:push": "clasp push -f -P apps-script"
+    "gas:push": "clasp push -f"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.119.0",

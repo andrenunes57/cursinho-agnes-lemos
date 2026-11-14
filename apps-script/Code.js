@@ -298,3 +298,23 @@ function status(corpo, config) {
     conta: config.conta,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Configuração inicial (rodar uma vez no editor, depois das Script Properties)
+// ---------------------------------------------------------------------------
+/**
+ * Concede os escopos do manifest (Drive e UrlFetch) à conta dona. Sem isso, o Web App
+ * "executar como eu" não funciona. Também confere as Script Properties, a pasta raiz e o acesso
+ * ao Supabase. Não é chamada pelo doPost.
+ */
+// oxlint-disable-next-line no-unused-vars
+function autorizar() {
+  var config = lerConfig();
+  var pasta = DriveApp.getFolderById(config.pastaRaizId);
+  var ping = UrlFetchApp.fetch(config.url + '/rest/v1/rpc/ping', {
+    method: 'post',
+    headers: { apikey: config.chave },
+    muteHttpExceptions: true,
+  });
+  console.log('Pasta raiz: ' + pasta.getName() + ' · Supabase ping: ' + ping.getResponseCode() + ' ' + ping.getContentText());
+}

@@ -453,8 +453,8 @@ As versões exatas são fixadas na F0 e registradas no §6.5.
 │  └─ tests/database/       ← pgTAP (*.test.sql)
 ├─ apps-script/
 │  ├─ Code.js               ← API de Arquivos (§10)
-│  ├─ appsscript.json       ← manifest (webapp: USER_DEPLOYING / ANYONE_ANONYMOUS)
-│  └─ .clasp.json           ← scriptId (sem segredos)
+│  └─ appsscript.json       ← manifest (webapp: USER_DEPLOYING / ANYONE_ANONYMOUS)
+├─ .clasp.json              ← scriptId + rootDir "apps-script" (sem segredos)
 ├─ e2e/                     ← Playwright (*.spec.ts) + global-setup.ts
 ├─ public/                  ← ícones/manifest
 ├─ src/
@@ -492,7 +492,7 @@ Versões instaladas na F0 (13/11/2026), todas exatas no `package.json` (`.npmrc`
 | @playwright/test / @axe-core/playwright | 1.65.0 / 4.14.0 |
 | oxlint | 1.93.0 |
 | GitHub Actions | checkout@v7, setup-node@v7, configure-pages@v6, upload-pages-artifact@v5, deploy-pages@v5 |
-| @google/clasp | _(F4)_ — 3.4.1 era a mais recente na F0 |
+| @google/clasp | 3.4.1 (F4) |
 | vite-plugin-pwa (P1) | _(F7)_ |
 | lucide-react | 1.72.0 (F2) |
 
@@ -1079,6 +1079,9 @@ Todos estão na conta pessoal do dev (ADR-08). Nenhum valor abaixo é secreto.
 | OAuth: origens JS | `https://andrenunes57.github.io`, `http://localhost:5173` |
 | OAuth: redirect URIs | `https://elxqckorrrwidoqgojfw.supabase.co/auth/v1/callback`, `http://127.0.0.1:54321/auth/v1/callback` |
 | Apps Script | "Google Apps Script API" **ativada** nas configurações do usuário (necessária para o `clasp`) |
+| Apps Script: projeto (F4) | "API de Arquivos — Cursinho Agnes Lemos", autônomo, na conta Google do dev que é coordenação no app (no Chrome do dev, a conta de índice 1: usar URLs `/u/1/`). scriptId `14Fk4stTubijok9W1hB5xruFFCZhe3EncgxBFEuakQ62aPchZ7bZW43FU` (`.clasp.json` na raiz, `rootDir: apps-script`). |
+| Apps Script: implantação (F4) | Deployment id `AKfycbwGhbTQn5b5MA3GDUm5yWHcry8N0dBHEQfvVgLzAsCZ_X_dWjXQY9z1ojuFyEGriwAb`. URL `/exec` = `https://script.google.com/macros/s/<deployment id>/exec`, já gravada em `configuracoes.api_arquivos.url` na nuvem. Para publicar código novo **sem mudar a URL**: `npm run gas:push` e `npx clasp create-deployment -i <deployment id> -d "<descrição>"`. |
+| Drive (F4) | Pasta raiz "Sistema Cursinho" no Drive da mesma conta (o id fica só na Script Property `PASTA_RAIZ_ID`). Subpastas criadas pela API: `materiais/AAAA-MM` e `entregas/AAAA-MM`. |
 
 **Segredos fora do repositório**, guardados pelo dono: a senha do banco do Supabase (usada em `supabase link` e `db push`) e a chave secreta do OAuth client (já colada no Supabase; é preciso de novo só para o login Google no stack local, em `supabase/.env`).
 
@@ -1094,7 +1097,7 @@ Todos estão na conta pessoal do dev (ADR-08). Nenhum valor abaixo é secreto.
 
 ### 12.5 Scripts do `package.json`
 
-`dev` · `build` · `preview` · `lint` · `typecheck` (`tsc -b`) · `test` (`vitest run`) · `test:e2e` (`playwright test`) · `db:start` · `db:reset` · `db:test` (`supabase test db`) · `db:types` (`supabase gen types typescript --local > src/types/database.ts`) · `gas:push` (`clasp push`)
+`dev` · `build` · `preview` · `lint` · `typecheck` (`tsc -b`) · `test` (`vitest run`) · `test:e2e` (`playwright test`) · `db:start` · `db:reset` · `db:test` (`supabase test db`) · `db:types` (`supabase gen types typescript --local > src/types/database.ts`) · `gas:push` (`clasp push -f`, com o `.clasp.json` da raiz)
 
 ---
 
@@ -1437,7 +1440,9 @@ Guardar no Drive do cursinho, numa **pasta restrita à coordenação**. **Nunca*
 | 13/11/2026 | F3: o E2E ganhou as contas `aprovar-est-*` e `aprovar-prof-*` (pendentes com onboarding feito, uma por projeto) e o campo `recriar` em `e2e/contas.ts`. O global-setup apaga, antes de cada execução, as turmas e disciplinas `E2E %` e as aulas das contas recriadas (o FK de `aulas.professor_id` é restrict). O pgTAP pressupõe banco vazio (suas fixtures usam os mesmos e-mails `@teste.local`), por isso depois de um E2E é `npm run db:reset && npm run db:test`. | Implementação (F3) |
 | 13/11/2026 | **F3 implementada** (DoD local verde): Vitest 60/60; E2E + axe 30/30 (celular e desktop), com checagem de rolagem horizontal em 375 px; pgTAP 244/244; bundle inicial de 184,5 KB gzip. Falta o DoD em produção: aprovar uma 2ª conta Google como estudante e uma 3ª como docente e criar aulas para ela. | Implementação (F3) |
 | 13/11/2026 | **F3 concluída.** Em produção, via Claude in Chrome: uma 2ª e uma 3ª conta Google fizeram o primeiro acesso ("Estudante Produção" e "Docente Produção") → a coordenação criou a "Turma 2027" e as 8 disciplinas do seed (a nuvem não tem seed) → aprovou a 2ª como estudante na Turma 2027 e a 3ª como docente → criou 2 aulas para a docente (13/11 e 14/11). O Início mostra 0 pendentes e 1 aula sem chamada. Ajustes de texto vistos em produção: "Turma criada: <nome>." (o nome já começa com "Turma") e o dia do cronograma só com a 1ª letra maiúscula. | Implementação (F3) |
-| _(F4)_ | Resultado do spike de CORS do Apps Script no celular | Implementação |
+| 14/11/2026 | F4: o projeto Apps Script foi criado com `clasp create-script --rootDir apps-script`, que gera o `.clasp.json` na raiz (versionado) e sobrescreve o manifest (restaurado pelo git). O Drive da conta Google padrão do Chrome do dev está 99% cheio, por isso tudo ficou na conta de índice 1 (a mesma da coordenação). | Usuário + implementação |
+| 14/11/2026 | F4: com várias contas Google logadas, a janela de "Revisar permissões" do Apps Script falha (abre com a conta padrão). A autorização da conta dona foi feita numa **janela anônima** só com essa conta, rodando `autorizar()` (`apps-script/Code.js`), que também confere as Script Properties, a pasta e o `ping` do Supabase. | Implementação |
+| 14/11/2026 | **Spike de CORS (§10.7), desktop: aprovado.** Do app publicado no Pages, no Chrome desktop com 2 contas Google logadas: upload de PDF (POST `text/plain`, redirect seguido) → arquivo em `Sistema Cursinho/materiais/2026-11`, visível por link sem login → exclusão do material → arquivo na lixeira do Drive. Plano B (Edge Function) não foi necessário. Falta o teste no Chrome Android (DoD da F4: PDF e foto pelo celular). | Implementação (F4) |
 
 ---
 
