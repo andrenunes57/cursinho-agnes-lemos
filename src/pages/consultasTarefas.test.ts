@@ -1,5 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { porPrazo, situacaoDaEntrega } from './consultasTarefas'
+
+// consultasTarefas importa o cliente, que exige as variáveis do build (ausentes no CI).
+vi.mock('../lib/supabase', () => ({ supabase: {} }))
 
 describe('situacaoDaEntrega (SPEC §8.3)', () => {
   const prazo = '2026-11-21T02:59:00Z'

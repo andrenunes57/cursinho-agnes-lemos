@@ -3,6 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { TarefaForm } from './TarefaForm'
 
+// TarefaForm usa consultasTarefas, que importa o cliente (variáveis ausentes no CI).
+vi.mock('../lib/supabase', () => ({ supabase: {} }))
+
 function abrir(props: Partial<Parameters<typeof TarefaForm>[0]> = {}) {
   const onEnviar = vi.fn()
   render(<TarefaForm enviando={false} textoBotao="Criar tarefa" onEnviar={onEnviar} onCancelar={vi.fn()} {...props} />)
