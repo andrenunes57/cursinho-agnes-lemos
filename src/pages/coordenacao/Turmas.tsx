@@ -228,7 +228,7 @@ function CartaoTurma({ turma, avisar }: { turma: Turma; avisar: AoResultado }) {
     async (d: DadosTurma) => {
       const { error } = await supabase.from('turmas').update(d).eq('id', turma.id)
       if (error) throw error
-      return `Turma ${d.nome} atualizada.`
+      return `Turma atualizada: ${d.nome}.`
     },
     avisar,
     () => setEditando(false),
@@ -285,7 +285,7 @@ export function Turmas() {
     async (d: DadosTurma) => {
       const { error } = await supabase.from('turmas').insert({ nome: d.nome, ano: d.ano })
       if (error) throw error
-      return `Turma ${d.nome} criada.`
+      return `Turma criada: ${d.nome}.`
     },
     avisar,
     () => setCriando(false),

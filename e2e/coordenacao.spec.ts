@@ -81,7 +81,7 @@ test('ciclo da coordenação: disciplina, turma, aprovação, cronograma e matr�
     await expect(page.getByLabel(/^Ano/)).toHaveValue(String(anoSP()))
     await verificar(page)
     await page.getByRole('button', { name: 'Criar turma' }).click()
-    await aviso(page, `Turma ${turma} criada.`)
+    await aviso(page, `Turma criada: ${turma}.`)
     await expect(cartao(page, turma).getByRole('heading', { name: turma })).toBeVisible()
   })
 

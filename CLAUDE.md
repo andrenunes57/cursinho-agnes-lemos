@@ -11,8 +11,8 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 
 - **F0, F1 e F2 concluídas** (13/11/2026). As 5 migrations estão na nuvem. A conta do dev já é
   coordenação ativa em produção (§16.1).
-- **F3 implementada** (telas da coordenação, DoD local verde). Falta validar em produção (2ª conta
-  como estudante, 3ª como docente, aulas para ela). **Depois: F4** (§4.3, §10).
+- **F3 concluída** (13/11/2026), também validada em produção: Turma 2027, 8 disciplinas, contas
+  "Estudante Produção" e "Docente Produção" aprovadas e 2 aulas da docente. **Próxima: F4** (§4.3, §10).
 - Rotas das F4 a F6 já estão em `src/router.tsx` com `provisoria(...)`: trocar pela página real.
 - Reutilizar da F3: `components/AulaForm.tsx` (sem `docentes` = docente criando a própria aula),
   `ui/Abas`, `ui/Select`, `ui/Confirmacao`, `ui/Etiqueta`, `lib/datas.ts`, `lib/erros.ts`.

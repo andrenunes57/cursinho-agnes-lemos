@@ -37,6 +37,9 @@ import {
   type Turma,
 } from './consultas'
 
+/** "sexta-feira, 13 de novembro" → "Sexta-feira, 13 de novembro". */
+const primeiraMaiuscula = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1)
+
 type AulaDaSemana = DadosAula & {
   id: string
   disciplina: string
@@ -343,8 +346,8 @@ function ListaDaSemana({
     <>
       {dias.map((dia) => (
         <section key={dia} aria-labelledby={`dia-${dia}`} className="flex flex-col gap-3">
-          <h3 id={`dia-${dia}`} className="font-semibold capitalize">
-            {formatarDataLonga(dia)}
+          <h3 id={`dia-${dia}`} className="font-semibold">
+            {primeiraMaiuscula(formatarDataLonga(dia))}
             {dia === hoje && ' (hoje)'}
           </h3>
           <ul className="flex flex-col gap-3">
