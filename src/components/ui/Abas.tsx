@@ -54,7 +54,7 @@ export function Abas<T extends string>({ rotulo, abas, parametro = 'aba', childr
 
   return (
     <div className="flex flex-col gap-4">
-      <div role="tablist" aria-label={rotulo} onKeyDown={aoTeclar} className="flex gap-1 overflow-x-auto border-b-2 border-borda">
+      <div role="tablist" aria-label={rotulo} onKeyDown={aoTeclar} className="flex gap-1 overflow-x-auto overflow-y-hidden border-b-2 border-borda">
         {abas.map((aba, i) => {
           const selecionada = aba.id === ativa
           return (

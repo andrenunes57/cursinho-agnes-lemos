@@ -15,9 +15,9 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
   "Estudante Produção" e "Docente Produção" aprovadas e 2 aulas da docente.
 - **F4** (14/11/2026): código no ar, API de Arquivos implantada e URL gravada em produção; spike de
   CORS no desktop aprovado. Falta o teste no Android (PDF e foto pelo celular).
-- **F5 implementada** (14/11/2026, DoD local verde); falta o ciclo em produção (docente → estudante →
-  avaliação). Depois: **F6** (§4.5).
-- API de Arquivos: `npm run gas:push` e depois `npx clasp create-deployment -i <deployment id>` (§12.3.1),
+- **F5 concluída** (14/11/2026), validada em produção nos 3 tipos de avaliação. Próxima: **F6** (§4.5).
+- Testes que importam (direta ou indiretamente) `lib/supabase` precisam de `vi.mock('../lib/supabase', ...)`:
+  no CI não há `.env.local`. Para reproduzir o CI: `VITE_SUPABASE_URL= npx vitest run`.- API de Arquivos: `npm run gas:push` e depois `npx clasp create-deployment -i <deployment id>` (§12.3.1),
   **sempre com `-i`** para não mudar a URL `/exec`.
 - No Chrome do dev, serviços Google do projeto (Drive, Apps Script) ficam na conta de índice 1: usar `/u/1/`.
 - Rotas da F6 ainda estão em `src/router.tsx` com `provisoria(...)`: trocar pela página real.

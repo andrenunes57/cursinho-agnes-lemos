@@ -83,7 +83,7 @@ function EntregasAguardando({ uid, somenteSeHouver }: { uid: string | undefined;
       ) : (
         <ul className="flex flex-col gap-2">
           {tarefas.data.map((t) => (
-            <li key={t.id} className="flex flex-wrap items-baseline gap-x-2">
+            <li key={t.id} className="flex flex-wrap items-center gap-x-2">
               <Link to={`/docente/tarefas/${t.id}/entregas`} className={classeLink}>
                 {t.titulo}
               </Link>
