@@ -23,11 +23,21 @@ export default async function globalSetup() {
 
   await mkdir('e2e/.auth', { recursive: true })
 
+  // Restos do coordenacao.spec.ts de execuções anteriores. Excluir a turma leva junto, em
+  // cascata, as aulas e as matrículas; só depois as disciplinas ficam livres (FK restrict).
+  for (const tabela of ['turmas', 'disciplinas'] as const) {
+    const { error } = await admin.from(tabela).delete().like('nome', 'E2E %')
+    if (error) throw error
+  }
+
   for (const [nome, conta] of Object.entries(CONTAS) as [NomeConta, (typeof CONTAS)[NomeConta]][]) {
     let id = existentes.get(conta.email)
 
-    // A conta sem onboarding precisa começar do zero a cada execução.
-    if (id && conta.nome_social === null) {
+    // Contas cujo estado o teste muda (onboarding, aprovação) começam do zero a cada execução.
+    if (id && 'recriar' in conta && conta.recriar) {
+      // Aula sob responsabilidade da pessoa bloqueia a exclusão (FK restrict, SPEC §8.4).
+      const { error: erroAulas } = await admin.from('aulas').delete().eq('professor_id', id)
+      if (erroAulas) throw erroAulas
       const { error } = await admin.auth.admin.deleteUser(id)
       if (error) throw error
       id = undefined

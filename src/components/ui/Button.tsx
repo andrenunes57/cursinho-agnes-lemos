@@ -1,11 +1,12 @@
-import type { ButtonHTMLAttributes } from 'react'
+import type { ButtonHTMLAttributes, Ref } from 'react'
 
-type Variante = 'primario' | 'secundario' | 'discreto'
+type Variante = 'primario' | 'secundario' | 'discreto' | 'perigo'
 
 const estilos: Record<Variante, string> = {
   primario: 'bg-marca text-white hover:bg-marca-escura',
   secundario: 'border-2 border-marca bg-superficie text-marca hover:bg-marca-clara',
   discreto: 'text-marca underline underline-offset-4 hover:text-marca-escura',
+  perigo: 'border-2 border-erro bg-superficie text-erro hover:bg-erro-fundo',
 }
 
 const classesBotao = (variante: Variante = 'primario') =>
@@ -16,6 +17,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   /** Mostra o texto de carregando e desabilita o botão. */
   carregando?: boolean
   textoCarregando?: string
+  ref?: Ref<HTMLButtonElement>
 }
 
 /** Botão com alvo de toque ≥ 44×44 px (SPEC §5.3). */

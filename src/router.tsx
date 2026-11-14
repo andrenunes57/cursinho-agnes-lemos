@@ -3,6 +3,10 @@ import { RequirePapel, RequireSessao, RequireStatus } from './auth/guardas'
 import { LayoutApp } from './layout/LayoutApp'
 import { RaizApp } from './layout/RaizApp'
 import { Aguardando } from './pages/acesso/Aguardando'
+import { Cronograma } from './pages/coordenacao/Cronograma'
+import { Disciplinas } from './pages/coordenacao/Disciplinas'
+import { Pessoas } from './pages/coordenacao/Pessoas'
+import { Turmas } from './pages/coordenacao/Turmas'
 import { PrimeiroAcesso } from './pages/acesso/PrimeiroAcesso'
 import { EmConstrucao } from './pages/EmConstrucao'
 import { Inicio } from './pages/Inicio'
@@ -14,7 +18,7 @@ import { Privacidade } from './pages/publico/Privacidade'
 // basename = base do Vite sem a barra final ('/cursinho-agnes-lemos'). SPEC §6.3 / §12.3.
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
 
-/** Rotas das fases F3 a F6, por enquanto com a página "em construção" (SPEC §11, §13). */
+/** Rotas das fases F4 a F6, por enquanto com a página "em construção" (SPEC §11, §13). */
 const provisoria = (path: string, titulo: string): RouteObject => ({
   path,
   element: <EmConstrucao titulo={titulo} />,
@@ -64,10 +68,10 @@ export const rotas: RouteObject[] = [
                   {
                     element: <RequirePapel papeis={['coordenacao']} />,
                     children: [
-                      provisoria('/coordenacao/pessoas', 'Pessoas'),
-                      provisoria('/coordenacao/turmas', 'Turmas'),
-                      provisoria('/coordenacao/disciplinas', 'Disciplinas'),
-                      provisoria('/coordenacao/aulas', 'Cronograma de aulas'),
+                      { path: '/coordenacao/pessoas', element: <Pessoas /> },
+                      { path: '/coordenacao/turmas', element: <Turmas /> },
+                      { path: '/coordenacao/disciplinas', element: <Disciplinas /> },
+                      { path: '/coordenacao/aulas', element: <Cronograma /> },
                       provisoria('/coordenacao/frequencia', 'Frequência'),
                       provisoria('/coordenacao/armazenamento', 'Armazenamento'),
                       provisoria('/coordenacao/configuracoes', 'Configurações'),

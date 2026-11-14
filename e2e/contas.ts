@@ -10,6 +10,8 @@ export type Conta = {
   pronomes: string | null
   papel: Papel
   status: Status
+  /** Excluída e criada de novo a cada execução (o teste muda o estado dela). */
+  recriar?: boolean
 }
 
 // Contas do stack LOCAL (SPEC §14.3). Nunca existem na nuvem.
@@ -20,9 +22,14 @@ export const CONTAS = {
   est: { email: 'est@teste.local', nome_social: 'Estudante Teste', pronomes: 'ela/dela', papel: 'estudante', status: 'ativo' },
   pend: { email: 'pend@teste.local', nome_social: 'Pessoa Pendente', pronomes: null, papel: 'estudante', status: 'pendente' },
   inativo: { email: 'inativo@teste.local', nome_social: 'Pessoa Inativa', pronomes: null, papel: 'estudante', status: 'inativo' },
-  // Uma conta nova por projeto (celular/desktop), recriada a cada execução, para o onboarding.
-  'novo-celular': { email: 'novo-celular@teste.local', nome_social: null, pronomes: null, papel: 'estudante', status: 'pendente' },
-  'novo-desktop': { email: 'novo-desktop@teste.local', nome_social: null, pronomes: null, papel: 'estudante', status: 'pendente' },
+  // Uma conta nova por projeto (celular/desktop), sem onboarding, para o acesso.spec.ts.
+  'novo-celular': { email: 'novo-celular@teste.local', nome_social: null, pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
+  'novo-desktop': { email: 'novo-desktop@teste.local', nome_social: null, pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
+  // Pendentes com onboarding feito, aprovadas pela coordenação no coordenacao.spec.ts (uma por projeto).
+  'aprovar-est-celular': { email: 'aprovar-est-celular@teste.local', nome_social: 'Estudante Aprovação Celular', pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
+  'aprovar-est-desktop': { email: 'aprovar-est-desktop@teste.local', nome_social: 'Estudante Aprovação Desktop', pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
+  'aprovar-prof-celular': { email: 'aprovar-prof-celular@teste.local', nome_social: 'Docente Aprovação Celular', pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
+  'aprovar-prof-desktop': { email: 'aprovar-prof-desktop@teste.local', nome_social: 'Docente Aprovação Desktop', pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
 } as const satisfies Record<string, Conta>
 
 export type NomeConta = keyof typeof CONTAS
