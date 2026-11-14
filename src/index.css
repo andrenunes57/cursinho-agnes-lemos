@@ -1,19 +1,50 @@
 @import "tailwindcss";
 
-/* Tokens de cor (SPEC §5.3: contraste ≥ 4,5:1 para texto). Expandir na F2. */
+/*
+ * Tokens (SPEC §5.3). Contraste sobre branco/fundo: texto ≥ 4,5:1, componentes ≥ 3:1.
+ * marca #5b2a86 ≈ 9,6:1 · texto #1e293b ≈ 14:1 · suave #475569 ≈ 7,5:1 · erro #b42318 ≈ 6,5:1
+ * sucesso #166534 ≈ 7,1:1 · borda-forte #64748b ≈ 4,8:1 (bordas de campo, ≥ 3:1).
+ */
 @theme {
   --color-marca: #5b2a86;
   --color-marca-escura: #43205f;
+  --color-marca-clara: #f3ecf9;
+  --color-texto: #1e293b;
+  --color-texto-suave: #475569;
+  --color-fundo: #f8fafc;
+  --color-superficie: #ffffff;
+  --color-borda: #e2e8f0;
+  --color-borda-forte: #64748b;
+  --color-erro: #b42318;
+  --color-erro-fundo: #fef3f2;
+  --color-sucesso: #166534;
+  --color-sucesso-fundo: #f0fdf4;
+
+  /* SPEC §11: navegação inferior até 768 px; lateral acima disso. */
+  --breakpoint-largo: 48.0625rem;
 }
 
 html {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
+body {
+  background-color: var(--color-fundo);
+  color: var(--color-texto);
+}
+
 /* Foco sempre visível (SPEC §5.3). */
 :focus-visible {
   outline: 3px solid var(--color-marca);
   outline-offset: 2px;
+}
+
+/*
+ * O <h1> recebe foco programático a cada troca de rota (só para o leitor de tela anunciar).
+ * Como não é um controle interativo, não mostra contorno.
+ */
+h1[tabindex="-1"]:focus {
+  outline: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

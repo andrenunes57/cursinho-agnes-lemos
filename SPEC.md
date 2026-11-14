@@ -494,7 +494,7 @@ Versões instaladas na F0 (13/11/2026), todas exatas no `package.json` (`.npmrc`
 | GitHub Actions | checkout@v7, setup-node@v7, configure-pages@v6, upload-pages-artifact@v5, deploy-pages@v5 |
 | @google/clasp | _(F4)_ — 3.4.1 era a mais recente na F0 |
 | vite-plugin-pwa (P1) | _(F7)_ |
-| lucide-react | _(F2)_ |
+| lucide-react | 1.72.0 (F2) |
 
 ---
 
@@ -1426,6 +1426,9 @@ Guardar no Drive do cursinho, numa **pasta restrita à coordenação**. **Nunca*
 | 13/11/2026 | **F0 concluída.** App "Olá" publicado no Pages. Login Google validado em produção e em localhost (entrar e sair). CI e deploy verdes. Vitest 7/7. Playwright + axe 4/4 (celular e desktop). | Implementação (F0) |
 | 13/11/2026 | Aprendizados da F0: (1) a regra de deploy do ambiente `github-pages` precisou ser trocada de `master` para `main`; (2) um login demorado volta com `bad_oauth_state` na Site URL, então o RF-01 passou a exigir tratamento de `?error=`; (3) já existe usuário em `auth.users`, então a F1 faz backfill de `perfis` | Implementação (F0) |
 | 13/11/2026 | **F1:** 5 migrations, seed e pgTAP (13 arquivos, 244 testes verdes); tipos gerados. Aprendizado: no Supabase CLI 3.x, `db push` vai para o **stack local** por padrão e não pede senha; para a nuvem é `db push --remote` (§12.3) | Implementação (F1) |
+| 13/11/2026 | **F2:** o e-mail de contato do cursinho para a LGPD ainda não existe. `/privacidade` mostra um marcador ("a definir"), definido numa constante única (`src/lib/contato.ts`). **Trocar antes do go-live.** | Usuário |
+| 13/11/2026 | F2: as rotas das F3 a F6 já existem com as guardas de papel, apontando para uma página "em construção" que cada fase substitui. No celular, a barra inferior mostra os 4 primeiros itens do menu + "Menu" com todos. | Implementação (F2) |
+| 13/11/2026 | F2: `npm run test:e2e` passa a exigir o stack local (`npm run db:start`). O `playwright.config.ts` lê `supabase status` e faz o build com a URL e a chave publishable locais. O global-setup cria as contas `*@teste.local` (§14.3), e o onboarding usa uma conta nova por projeto (`novo-celular`, `novo-desktop`). | Implementação (F2) |
 | _(F4)_ | Resultado do spike de CORS do Apps Script no celular | Implementação |
 
 ---

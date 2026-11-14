@@ -10,7 +10,12 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 ## Estado atual
 
 - **F0 concluída** (13/11/2026). **F1:** código e pgTAP concluídos (`db:test` 244/244); **falta o
-  `npx supabase db push --remote`** para a nuvem. **Próxima: F2** (auth, onboarding e layout), §7 e §11.
+  `npx supabase db push --remote`** para a nuvem.
+- **F2 implementada** (auth, onboarding, layout por papel): Vitest 34/34, E2E + axe 28/28.
+  Falta a verificação manual em produção (login Google → onboarding → aguardando → SQL do §16.1 →
+  menu da coordenação). **Próxima: F3** (coordenação), §4.2 e §11.
+- Rotas das F3 a F6 já estão em `src/router.tsx` com `provisoria(...)`: trocar pela página real.
+- E-mail de contato da LGPD pendente em `src/lib/contato.ts` (trocar antes do go-live).
 - Recursos na nuvem e identificadores: SPEC §12.3.1.
 - `.env.local` aponta para o stack **local** do Supabase (`npx supabase status`).
 - **CLI 3.x:** `db push`, `db test`, `migration list` etc. vão para o stack **local** por padrão.
@@ -22,7 +27,7 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 |---|---|
 | Dev | `npm run dev` → http://localhost:5173/cursinho-agnes-lemos/ |
 | Qualidade (o mesmo que o CI roda) | `npm run lint && npm run typecheck && npm test && npm run build` |
-| E2E + acessibilidade (axe) | `npm run test:e2e` (build + preview na porta 4173) |
+| E2E + acessibilidade (axe) | `npm run db:start` e depois `npm run test:e2e` (build com o stack local + preview na porta 4173) |
 | Banco local (Docker/Rancher Desktop ligado) | `npm run db:start` · `npm run db:reset` · `npm run db:test` · `npm run db:types` |
 | Aplicar migrations na nuvem | `npx supabase db push --remote` (sem `--remote` o CLI 3.x vai para o stack local) |
 

@@ -311,3 +311,6 @@ blob-report/
 playwright/.cache/
 # .env.production é intencionalmente versionado (só valores públicos — SPEC §12.3)
 !.env.production
+
+# Sessões dos testes E2E (storageState com tokens do stack local)
+e2e/.auth/
