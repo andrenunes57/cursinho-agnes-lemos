@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { useAuth } from '../../auth/contexto'
 import { AulaForm, type DadosAula } from '../../components/AulaForm'
+import { ChamadaDocente } from '../../components/ChamadaDocente'
 import { MateriaisDocente } from '../../components/MateriaisDocente'
 import { TarefasDocente } from '../../components/TarefasDocente'
 import { Abas } from '../../components/ui/Abas'
@@ -167,7 +168,7 @@ export function AulaDocente() {
           <>
             {!ehDocenteDaAula && (
               <p className="rounded-lg border-l-4 border-marca bg-marca-clara px-4 py-3">
-                Você está vendo como coordenação: só leitura. Dá para excluir materiais e tarefas, para moderação.
+                Você está vendo como coordenação: só leitura. Dá para excluir materiais e tarefas, para moderação. A chamada é feita só pela pessoa docente da aula.
               </p>
             )}
             <Abas rotulo="Seções da aula" abas={ABAS}>
@@ -177,9 +178,7 @@ export function AulaDocente() {
                 ) : aba === 'tarefas' ? (
                   <TarefasDocente aula={a} podeEditar={ehDocenteDaAula} podeExcluir={ehCoordenacao} avisar={avisar} />
                 ) : (
-                  <EmptyState titulo="Chamada chega em breve">
-                    <p>Esta seção entra numa próxima versão do sistema.</p>
-                  </EmptyState>
+                  <ChamadaDocente aula={a} podeEditar={ehDocenteDaAula} avisar={avisar} />
                 )
               }
             </Abas>

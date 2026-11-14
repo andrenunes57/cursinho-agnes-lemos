@@ -7,6 +7,9 @@ import type { Database } from '../src/types/database.ts'
 export const URL_API_ARQUIVOS_E2E = 'https://api-arquivos.e2e.invalid/exec'
 export const CONTA_E2E = 'e2e'
 
+/** Uso do Drive devolvido pela ação `status` simulada: 13 de 15 GB (86,7%, acima do alerta de 80%). */
+export const USO_DRIVE_E2E = { usadoBytes: 13 * 1024 ** 3, limiteBytes: 15 * 1024 ** 3 }
+
 type Corpo = { action?: string; accessToken?: string; [k: string]: unknown }
 export type ChamadaApi = { action: string; corpo: Corpo }
 
@@ -63,6 +66,13 @@ export async function simularApiArquivos(page: Page): Promise<ChamadaApi[]> {
       if (error) return responder({ ok: false, erro: error.code === '23503' ? 'EM_USO' : 'SEM_PERMISSAO' })
       if (data.length === 0) return responder({ ok: false, erro: 'NAO_ENCONTRADO' })
       return responder({ ok: true })
+    }
+
+    if (corpo.action === 'status') {
+      // Como o Apps Script: só a coordenação ativa vê o uso do Drive.
+      const { data: perfil } = await cliente.from('perfis').select('papel, status').eq('id', usuario.user.id).maybeSingle()
+      if (perfil?.papel !== 'coordenacao' || perfil.status !== 'ativo') return responder({ ok: false, erro: 'SEM_PERMISSAO' })
+      return responder({ ok: true, usadoBytes: USO_DRIVE_E2E.usadoBytes, limiteBytes: USO_DRIVE_E2E.limiteBytes, conta: CONTA_E2E })
     }
 
     return responder({ ok: false, erro: 'REQUISICAO_INVALIDA' })

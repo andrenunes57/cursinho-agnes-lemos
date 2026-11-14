@@ -3,20 +3,23 @@ import { RequirePapel, RequireSessao, RequireStatus } from './auth/guardas'
 import { LayoutApp } from './layout/LayoutApp'
 import { RaizApp } from './layout/RaizApp'
 import { Aguardando } from './pages/acesso/Aguardando'
+import { Armazenamento } from './pages/coordenacao/Armazenamento'
 import { Configuracoes } from './pages/coordenacao/Configuracoes'
 import { Cronograma } from './pages/coordenacao/Cronograma'
 import { Disciplinas } from './pages/coordenacao/Disciplinas'
+import { Frequencia as FrequenciaCoordenacao } from './pages/coordenacao/Frequencia'
 import { Pessoas } from './pages/coordenacao/Pessoas'
 import { Turmas } from './pages/coordenacao/Turmas'
 import { PrimeiroAcesso } from './pages/acesso/PrimeiroAcesso'
 import { AulaDocente } from './pages/docente/AulaDocente'
 import { EntregasTarefa } from './pages/docente/EntregasTarefa'
+import { FrequenciaDocente } from './pages/docente/FrequenciaDocente'
 import { MinhasAulas } from './pages/docente/MinhasAulas'
 import { Aula } from './pages/estudante/Aula'
 import { Aulas } from './pages/estudante/Aulas'
+import { Frequencia } from './pages/estudante/Frequencia'
 import { Tarefa } from './pages/estudante/Tarefa'
 import { Tarefas } from './pages/estudante/Tarefas'
-import { EmConstrucao } from './pages/EmConstrucao'
 import { Inicio } from './pages/Inicio'
 import { NaoEncontrado } from './pages/NaoEncontrado'
 import { Perfil } from './pages/Perfil'
@@ -25,12 +28,6 @@ import { Privacidade } from './pages/publico/Privacidade'
 
 // basename = base do Vite sem a barra final ('/cursinho-agnes-lemos'). SPEC §6.3 / §12.3.
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
-
-/** Rotas da fase F6, por enquanto com a página "em construção" (SPEC §11, §13). */
-const provisoria = (path: string, titulo: string): RouteObject => ({
-  path,
-  element: <EmConstrucao titulo={titulo} />,
-})
 
 export const rotas: RouteObject[] = [
   {
@@ -61,7 +58,7 @@ export const rotas: RouteObject[] = [
                       { path: '/aulas/:id', element: <Aula /> },
                       { path: '/tarefas', element: <Tarefas /> },
                       { path: '/tarefas/:id', element: <Tarefa /> },
-                      provisoria('/frequencia', 'Minha frequência'),
+                      { path: '/frequencia', element: <Frequencia /> },
                     ],
                   },
                   {
@@ -70,7 +67,7 @@ export const rotas: RouteObject[] = [
                       { path: '/docente/aulas', element: <MinhasAulas /> },
                       { path: '/docente/aulas/:id', element: <AulaDocente /> },
                       { path: '/docente/tarefas/:id/entregas', element: <EntregasTarefa /> },
-                      provisoria('/docente/frequencia', 'Frequência das minhas aulas'),
+                      { path: '/docente/frequencia', element: <FrequenciaDocente /> },
                     ],
                   },
                   {
@@ -80,8 +77,8 @@ export const rotas: RouteObject[] = [
                       { path: '/coordenacao/turmas', element: <Turmas /> },
                       { path: '/coordenacao/disciplinas', element: <Disciplinas /> },
                       { path: '/coordenacao/aulas', element: <Cronograma /> },
-                      provisoria('/coordenacao/frequencia', 'Frequência'),
-                      provisoria('/coordenacao/armazenamento', 'Armazenamento'),
+                      { path: '/coordenacao/frequencia', element: <FrequenciaCoordenacao /> },
+                      { path: '/coordenacao/armazenamento', element: <Armazenamento /> },
                       { path: '/coordenacao/configuracoes', element: <Configuracoes /> },
                     ],
                   },

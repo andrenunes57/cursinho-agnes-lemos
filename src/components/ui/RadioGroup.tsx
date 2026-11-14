@@ -9,12 +9,14 @@ type Props<T extends string> = {
   valor: T
   onChange: (valor: T) => void
   dica?: string
+  /** Opções lado a lado (quebrando a linha se faltar espaço), em vez de uma por linha. */
+  emLinha?: boolean
   /** Conteúdo extra logo abaixo das opções (ex.: campo "outro"). */
   children?: ReactNode
 }
 
 /** Grupo de rádios em <fieldset> com <legend> (SPEC §5.3). */
-export function RadioGroup<T extends string>({ legenda, nome, opcoes, valor, onChange, dica, children }: Props<T>) {
+export function RadioGroup<T extends string>({ legenda, nome, opcoes, valor, onChange, dica, emLinha = false, children }: Props<T>) {
   const id = useId()
   return (
     <fieldset className="flex flex-col gap-1" aria-describedby={dica ? `${id}-dica` : undefined}>
@@ -24,7 +26,7 @@ export function RadioGroup<T extends string>({ legenda, nome, opcoes, valor, onC
           {dica}
         </p>
       )}
-      <div className="flex flex-col">
+      <div className={emLinha ? 'flex flex-wrap gap-x-6' : 'flex flex-col'}>
         {opcoes.map((opcao) => (
           <label key={opcao.valor} className="flex min-h-11 cursor-pointer items-center gap-3">
             <input

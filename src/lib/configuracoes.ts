@@ -1,6 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
-import { MAX_MB_PADRAO, MB, enviarArquivo, excluirArquivo, type ConfigArquivos, type Finalidade } from './arquivos'
+import {
+  MAX_MB_PADRAO,
+  MB,
+  enviarArquivo,
+  excluirArquivo,
+  statusArmazenamento,
+  type ConfigArquivos,
+  type Finalidade,
+} from './arquivos'
 import { supabase } from './supabase'
 
 // Configurações editáveis pela coordenação (SPEC §8.3 `configuracoes`, RF-26):
@@ -65,6 +73,7 @@ export function useApiArquivos() {
       maxBytes,
       enviar: (arquivo: File, finalidade: Finalidade) => enviarArquivo(arquivo, finalidade, config),
       excluir: (arquivoId: string) => excluirArquivo(arquivoId, config),
+      status: () => statusArmazenamento(config),
     }
   }, [url, maxBytes, consulta.isPending])
 }

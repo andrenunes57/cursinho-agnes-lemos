@@ -15,14 +15,18 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
   "Estudante Produção" e "Docente Produção" aprovadas e 2 aulas da docente.
 - **F4 concluída** (14/11/2026): API de Arquivos implantada; upload validado no desktop e no Chrome
   Android (PDF + foto da câmera).
-- **F5 concluída** (14/11/2026), validada em produção nos 3 tipos de avaliação. Próxima: **F6** (§4.5).
+- **F5 concluída** (14/11/2026), validada em produção nos 3 tipos de avaliação.
+- **F6 implementada** (14/11/2026), com o DoD local verde. Falta validar em produção: chamada e correção
+  pela "Docente Produção", frequência da "Estudante Produção", relatório + CSV e Armazenamento da coordenação. Depois: **F7**.
 - Testes que importam (direta ou indiretamente) `lib/supabase` precisam de `vi.mock('../lib/supabase', ...)`:
-  no CI não há `.env.local`. Para reproduzir o CI: `VITE_SUPABASE_URL= npx vitest run`.- API de Arquivos: `npm run gas:push` e depois `npx clasp create-deployment -i <deployment id>` (§12.3.1),
+  no CI não há `.env.local`. Para reproduzir o CI: `VITE_SUPABASE_URL= npx vitest run`.
+- API de Arquivos: `npm run gas:push` e depois `npx clasp create-deployment -i <deployment id>` (§12.3.1),
   **sempre com `-i`** para não mudar a URL `/exec`.
 - No Chrome do dev, serviços Google do projeto (Drive, Apps Script) ficam na conta de índice 1: usar `/u/1/`.
-- Rotas da F6 ainda estão em `src/router.tsx` com `provisoria(...)`: trocar pela página real.
 - Reutilizar da F5: `pages/consultasTarefas.ts` (situação da entrega, `useEstudantesDaTurma`),
   `components/LinkExterno.tsx`, `lib/datas.ts` (prazos em hora de SP).
+- Reutilizar da F6: `lib/csv.ts`, `lib/frequencia.ts`, `pages/consultasFrequencia.ts`. As rotas de todas as
+  fases já têm página real (o `EmConstrucao` foi removido); a F7 cobre todas no `a11y.spec.ts`.
 - Reutilizar da F3: `components/AulaForm.tsx` (sem `docentes` = docente criando a própria aula),
   `ui/Abas`, `ui/Select`, `ui/Confirmacao`, `ui/Etiqueta`, `lib/datas.ts`, `lib/erros.ts`.
 - Depois de rodar o E2E, o pgTAP exige `npm run db:reset && npm run db:test` (as fixtures colidem

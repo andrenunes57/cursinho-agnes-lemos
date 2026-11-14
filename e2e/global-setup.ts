@@ -4,7 +4,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import type { Database } from '../src/types/database.ts'
 import { anoSP } from '../src/lib/datas.ts'
 import { CONTA_E2E } from './apiArquivos.ts'
-import { CONTAS, estadoDe, TURMA_MATERIAIS, type NomeConta } from './contas.ts'
+import { CONTAS, estadoDe, PROJETOS, TURMA_MATERIAIS, turmaChamada, type NomeConta } from './contas.ts'
 
 /**
  * SPEC §14.3: cria/atualiza as contas de teste no stack LOCAL pela Admin API (secret key local),
@@ -95,15 +95,14 @@ export default async function globalSetup() {
     ids.set(nome, id)
   }
 
-  // materiais.spec.ts: turma onde a `prof` cria aulas e a `est` está matriculada.
-  const { data: turma, error: erroTurma } = await admin
-    .from('turmas')
-    .insert({ nome: TURMA_MATERIAIS, ano: anoSP() })
-    .select('id')
-    .single()
-  if (erroTurma) throw erroTurma
-  const { error: erroMatricula } = await admin
-    .from('matriculas')
-    .insert({ turma_id: turma.id, estudante_id: ids.get('est') as string })
-  if (erroMatricula) throw erroMatricula
+  // Turmas onde a `prof` cria aulas e a `est` está matriculada: a dos materiais.spec.ts e
+  // tarefas.spec.ts, e uma por projeto para o chamada.spec.ts.
+  for (const nome of [TURMA_MATERIAIS, ...PROJETOS.map(turmaChamada)]) {
+    const { data: turma, error: erroTurma } = await admin.from('turmas').insert({ nome, ano: anoSP() }).select('id').single()
+    if (erroTurma) throw erroTurma
+    const { error: erroMatricula } = await admin
+      .from('matriculas')
+      .insert({ turma_id: turma.id, estudante_id: ids.get('est') as string })
+    if (erroMatricula) throw erroMatricula
+  }
 }

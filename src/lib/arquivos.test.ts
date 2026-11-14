@@ -67,6 +67,7 @@ describe('formatarTamanho e mensagens', () => {
     expect(formatarTamanho(350)).toBe('350 bytes')
     expect(formatarTamanho(2048)).toBe('2 KB')
     expect(formatarTamanho(1.5 * MB)).toBe('1,5 MB')
+    expect(formatarTamanho(15 * 1024 * MB)).toBe('15 GB')
   })
 
   it('mapeia os códigos do protocolo (§10.2) para mensagens amigáveis', () => {

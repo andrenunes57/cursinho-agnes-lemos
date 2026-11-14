@@ -39,3 +39,8 @@ export const estadoDe = (conta: NomeConta) => `e2e/.auth/${conta}.json`
 
 /** Turma criada pelo global-setup para o materiais.spec.ts (com a `est` matriculada). */
 export const TURMA_MATERIAIS = 'E2E Turma Materiais'
+
+/** Turmas do chamada.spec.ts, uma por projeto (com a `est` matriculada), para o relatório não
+ * misturar as chamadas de celular e desktop, que rodam em paralelo. */
+export const PROJETOS = ['celular', 'desktop'] as const
+export const turmaChamada = (projeto: string) => `E2E Turma Chamada ${projeto}`

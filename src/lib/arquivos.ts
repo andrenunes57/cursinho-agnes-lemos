@@ -62,11 +62,12 @@ export function mimeDoArquivo(arquivo: { name: string; type: string }): string {
 
 const fmtNumero = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 })
 
-/** 350 → "350 bytes"; 2048 → "2 KB"; 1_572_864 → "1,5 MB". */
+/** 350 → "350 bytes"; 2048 → "2 KB"; 1_572_864 → "1,5 MB"; 16_106_127_360 → "15 GB". */
 export function formatarTamanho(bytes: number): string {
   if (bytes < 1024) return `${bytes} bytes`
   if (bytes < MB) return `${fmtNumero.format(bytes / 1024)} KB`
-  return `${fmtNumero.format(bytes / MB)} MB`
+  if (bytes < 1024 * MB) return `${fmtNumero.format(bytes / MB)} MB`
+  return `${fmtNumero.format(bytes / (1024 * MB))} GB`
 }
 
 export const MENSAGEM_VIDEO = 'Vídeo não é enviado como arquivo: publique no YouTube como “não listado” e cole o link.'
