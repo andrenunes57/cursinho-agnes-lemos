@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { nomeComPronomes } from '../auth/contexto'
 import { baixarCSV, gerarCSV, paraNomeDeArquivo } from '../lib/csv'
@@ -42,8 +43,13 @@ const COLUNAS = [
 export function RelatorioFrequencia({ turmas, exportar = false }: Props) {
   const [params, setParams] = useSearchParams()
   const turma = turmas.find((t) => t.id === params.get('turma')) ?? turmas[0]
-  const de = ehDataISO(params.get('de')) ? (params.get('de') as string) : ''
-  const ate = ehDataISO(params.get('ate')) ? (params.get('ate') as string) : ''
+  // As datas ficam em estado local e a URL só espelha o filtro. Um campo de data controlado direto
+  // pela URL recebe o valor antigo de volta enquanto o `setParams` não termina, e esse valor zera a
+  // digitação do ano no Chrome. Como `mudar` usa `replace`, a URL não muda por fora com a página aberta.
+  const [textoDe, setTextoDe] = useState(() => params.get('de') ?? '')
+  const [textoAte, setTextoAte] = useState(() => params.get('ate') ?? '')
+  const de = ehDataISO(textoDe) ? textoDe : ''
+  const ate = ehDataISO(textoAte) ? textoAte : ''
   const periodoInvalido = Boolean(de && ate && de > ate)
 
   const frequencia = useFrequencia(turma.id, de, ate, !periodoInvalido)
@@ -170,13 +176,25 @@ export function RelatorioFrequencia({ turmas, exportar = false }: Props) {
             onChange={(e) => mudar('turma', e.target.value)}
           />
         </div>
-        <Field rotulo="De" type="date" value={de} max={ate || undefined} onChange={(e) => mudar('de', e.target.value)} />
+        <Field
+          rotulo="De"
+          type="date"
+          value={textoDe}
+          max={ate || undefined}
+          onChange={(e) => {
+            setTextoDe(e.target.value)
+            mudar('de', e.target.value)
+          }}
+        />
         <Field
           rotulo="Até"
           type="date"
-          value={ate}
+          value={textoAte}
           min={de || undefined}
-          onChange={(e) => mudar('ate', e.target.value)}
+          onChange={(e) => {
+            setTextoAte(e.target.value)
+            mudar('ate', e.target.value)
+          }}
           erro={periodoInvalido ? 'A data final precisa ser igual ou posterior à inicial.' : null}
         />
       </div>

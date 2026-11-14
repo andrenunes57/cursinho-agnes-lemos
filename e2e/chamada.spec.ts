@@ -89,6 +89,17 @@ test('chamada, frequência, relatórios e armazenamento (RF-20 a RF-25)', async 
     await expect(page.getByRole('button', { name: 'Exportar CSV' })).toHaveCount(0)
     await verificarPagina(page)
 
+    // Digitada tecla a tecla, a data não pode se perder: o campo passa por anos como "0002" e,
+    // se o React devolver o valor antigo no meio da digitação, o Chrome recomeça o ano.
+    // Dia = mês porque a ordem dos segmentos segue o idioma do navegador, não o `locale`.
+    const campoDe = page.getByLabel('De', { exact: true })
+    const digitada = `${anoSP()}-11-11`
+    await campoDe.focus() // primeiro segmento; um click no centro cairia no segundo
+    await page.keyboard.type(`1111${anoSP()}`, { delay: 50 })
+    await expect(campoDe).toHaveValue(digitada)
+    await expect(page).toHaveURL(new RegExp(`de=${digitada}`))
+    await campoDe.fill('')
+
     // Período sem a aula: a estudante aparece sem chamada.
     await page.getByLabel('Até', { exact: true }).fill(somarDias(hojeSP(), -1))
     await expect(page.getByText('Sem chamada').filter({ visible: true }).first()).toBeVisible()
