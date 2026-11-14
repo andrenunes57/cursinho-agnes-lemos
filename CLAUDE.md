@@ -13,8 +13,8 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
   coordenação ativa em produção (§16.1).
 - **F3 concluída** (13/11/2026), também validada em produção: Turma 2027, 8 disciplinas, contas
   "Estudante Produção" e "Docente Produção" aprovadas e 2 aulas da docente.
-- **F4** (14/11/2026): código no ar, API de Arquivos implantada e URL gravada em produção; spike de
-  CORS no desktop aprovado. Falta o teste no Android (PDF e foto pelo celular).
+- **F4 concluída** (14/11/2026): API de Arquivos implantada; upload validado no desktop e no Chrome
+  Android (PDF + foto da câmera).
 - **F5 concluída** (14/11/2026), validada em produção nos 3 tipos de avaliação. Próxima: **F6** (§4.5).
 - Testes que importam (direta ou indiretamente) `lib/supabase` precisam de `vi.mock('../lib/supabase', ...)`:
   no CI não há `.env.local`. Para reproduzir o CI: `VITE_SUPABASE_URL= npx vitest run`.- API de Arquivos: `npm run gas:push` e depois `npx clasp create-deployment -i <deployment id>` (§12.3.1),
