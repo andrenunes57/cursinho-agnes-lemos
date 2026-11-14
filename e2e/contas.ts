@@ -36,3 +36,6 @@ export type NomeConta = keyof typeof CONTAS
 
 /** Arquivo de storageState (sessão já logada) de cada conta. */
 export const estadoDe = (conta: NomeConta) => `e2e/.auth/${conta}.json`
+
+/** Turma criada pelo global-setup para o materiais.spec.ts (com a `est` matriculada). */
+export const TURMA_MATERIAIS = 'E2E Turma Materiais'

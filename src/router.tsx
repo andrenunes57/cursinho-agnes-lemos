@@ -3,11 +3,16 @@ import { RequirePapel, RequireSessao, RequireStatus } from './auth/guardas'
 import { LayoutApp } from './layout/LayoutApp'
 import { RaizApp } from './layout/RaizApp'
 import { Aguardando } from './pages/acesso/Aguardando'
+import { Configuracoes } from './pages/coordenacao/Configuracoes'
 import { Cronograma } from './pages/coordenacao/Cronograma'
 import { Disciplinas } from './pages/coordenacao/Disciplinas'
 import { Pessoas } from './pages/coordenacao/Pessoas'
 import { Turmas } from './pages/coordenacao/Turmas'
 import { PrimeiroAcesso } from './pages/acesso/PrimeiroAcesso'
+import { AulaDocente } from './pages/docente/AulaDocente'
+import { MinhasAulas } from './pages/docente/MinhasAulas'
+import { Aula } from './pages/estudante/Aula'
+import { Aulas } from './pages/estudante/Aulas'
 import { EmConstrucao } from './pages/EmConstrucao'
 import { Inicio } from './pages/Inicio'
 import { NaoEncontrado } from './pages/NaoEncontrado'
@@ -18,7 +23,7 @@ import { Privacidade } from './pages/publico/Privacidade'
 // basename = base do Vite sem a barra final ('/cursinho-agnes-lemos'). SPEC §6.3 / §12.3.
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
 
-/** Rotas das fases F4 a F6, por enquanto com a página "em construção" (SPEC §11, §13). */
+/** Rotas das fases F5 e F6, por enquanto com a página "em construção" (SPEC §11, §13). */
 const provisoria = (path: string, titulo: string): RouteObject => ({
   path,
   element: <EmConstrucao titulo={titulo} />,
@@ -49,8 +54,8 @@ export const rotas: RouteObject[] = [
                   {
                     element: <RequirePapel papeis={['estudante']} />,
                     children: [
-                      provisoria('/aulas', 'Aulas'),
-                      provisoria('/aulas/:id', 'Aula'),
+                      { path: '/aulas', element: <Aulas /> },
+                      { path: '/aulas/:id', element: <Aula /> },
                       provisoria('/tarefas', 'Tarefas'),
                       provisoria('/tarefas/:id', 'Tarefa'),
                       provisoria('/frequencia', 'Minha frequência'),
@@ -59,8 +64,8 @@ export const rotas: RouteObject[] = [
                   {
                     element: <RequirePapel papeis={['professor', 'coordenacao']} />,
                     children: [
-                      provisoria('/docente/aulas', 'Minhas aulas'),
-                      provisoria('/docente/aulas/:id', 'Aula'),
+                      { path: '/docente/aulas', element: <MinhasAulas /> },
+                      { path: '/docente/aulas/:id', element: <AulaDocente /> },
                       provisoria('/docente/tarefas/:id/entregas', 'Entregas'),
                       provisoria('/docente/frequencia', 'Frequência das minhas aulas'),
                     ],
@@ -74,7 +79,7 @@ export const rotas: RouteObject[] = [
                       { path: '/coordenacao/aulas', element: <Cronograma /> },
                       provisoria('/coordenacao/frequencia', 'Frequência'),
                       provisoria('/coordenacao/armazenamento', 'Armazenamento'),
-                      provisoria('/coordenacao/configuracoes', 'Configurações'),
+                      { path: '/coordenacao/configuracoes', element: <Configuracoes /> },
                     ],
                   },
                 ],

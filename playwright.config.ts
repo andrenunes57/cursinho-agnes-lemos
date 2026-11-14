@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 import { execSync } from 'node:child_process'
+import { URL_API_ARQUIVOS_E2E } from './e2e/apiArquivos.ts'
 
 // SPEC §14.3: E2E contra o stack LOCAL do Supabase (`npm run db:start` antes), nos viewports de
 // celular (375×667) e desktop (1280×800). O app é o build de produção servido pelo `vite preview`,
@@ -70,6 +71,8 @@ export default defineConfig({
     env: {
       VITE_SUPABASE_URL: stack.url,
       VITE_SUPABASE_PUBLISHABLE_KEY: stack.publishable,
+      // A API de Arquivos é simulada com page.route (SPEC §14.3, e2e/apiArquivos.ts).
+      VITE_API_ARQUIVOS_URL: URL_API_ARQUIVOS_E2E,
     },
   },
 })

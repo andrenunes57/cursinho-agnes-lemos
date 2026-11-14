@@ -55,3 +55,27 @@ export function validarAno(valor: string): string | null {
 export function validarObrigatorio(valor: string, mensagem: string): string | null {
   return valor.trim() ? null : mensagem
 }
+
+// Materiais (SPEC §8.3): o banco não tem CHECK de tamanho no título; o limite é de UI.
+export const TITULO_MATERIAL_MIN = 2
+export const TITULO_MATERIAL_MAX = 120
+export const TEXTO_MATERIAL_MAX = 5000
+
+export function validarTituloMaterial(valor: string): string | null {
+  return validarTexto(valor, TITULO_MATERIAL_MIN, TITULO_MATERIAL_MAX, 'Informe o título do material.')
+}
+
+/** Link http(s) válido (materiais do tipo link, configuração da API). */
+export function ehUrlHttp(valor: string): boolean {
+  try {
+    const url = new URL(valor.trim())
+    return (url.protocol === 'https:' || url.protocol === 'http:') && Boolean(url.hostname)
+  } catch {
+    return false
+  }
+}
+
+export function validarUrl(valor: string): string | null {
+  if (!valor.trim()) return 'Informe o link.'
+  return ehUrlHttp(valor) ? null : 'Use um link completo, começando com https://.'
+}

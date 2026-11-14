@@ -20,6 +20,7 @@ import {
   hojeSP,
   inicioDaSemana,
   intervaloDaSemana,
+  primeiraMaiuscula,
   somarDias,
 } from '../../lib/datas'
 import { mensagemDeErro } from '../../lib/erros'
@@ -36,9 +37,6 @@ import {
   type MembroEquipe,
   type Turma,
 } from './consultas'
-
-/** "sexta-feira, 13 de novembro" → "Sexta-feira, 13 de novembro". */
-const primeiraMaiuscula = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1)
 
 type AulaDaSemana = DadosAula & {
   id: string
@@ -160,6 +158,13 @@ function CartaoAula({ aula, listas, hoje, avisar }: { aula: AulaDaSemana; listas
         />
       ) : (
         <div className="flex flex-wrap gap-2">
+          <Link
+            to={`/docente/aulas/${aula.id}`}
+            aria-label={`Ver materiais de ${aula.titulo}`}
+            className="inline-flex min-h-11 items-center px-2 font-semibold text-marca underline underline-offset-4"
+          >
+            Ver materiais
+          </Link>
           <Button variante="secundario" aria-label={`Editar ${aula.titulo}`} onClick={() => setEditando(true)}>
             Editar
           </Button>

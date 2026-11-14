@@ -5,6 +5,7 @@ import {
   formatarDataLonga,
   formatarDiaMes,
   formatarHora,
+  formatarQuando,
   hojeSP,
   inicioDaSemana,
   intervaloDaSemana,
@@ -63,5 +64,10 @@ describe('formatação', () => {
   it('corta os segundos da hora', () => {
     expect(formatarHora('14:00:00')).toBe('14:00')
     expect(formatarHora(null)).toBeNull()
+  })
+
+  it('junta o dia (com maiúscula) e o horário', () => {
+    expect(formatarQuando('2026-11-13', '14:00:00')).toBe('Sexta-feira, 13 de novembro, às 14:00')
+    expect(formatarQuando('2026-11-13', null)).toBe('Sexta-feira, 13 de novembro')
   })
 })

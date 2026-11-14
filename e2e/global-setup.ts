@@ -2,7 +2,9 @@ import { createClient, type SupportedStorage } from '@supabase/supabase-js'
 import { randomBytes } from 'node:crypto'
 import { mkdir, writeFile } from 'node:fs/promises'
 import type { Database } from '../src/types/database.ts'
-import { CONTAS, estadoDe, type NomeConta } from './contas.ts'
+import { anoSP } from '../src/lib/datas.ts'
+import { CONTA_E2E } from './apiArquivos.ts'
+import { CONTAS, estadoDe, TURMA_MATERIAIS, type NomeConta } from './contas.ts'
 
 /**
  * SPEC §14.3: cria/atualiza as contas de teste no stack LOCAL pela Admin API (secret key local),
@@ -22,11 +24,18 @@ export default async function globalSetup() {
   const existentes = new Map(lista.users.map((u) => [u.email, u.id]))
 
   await mkdir('e2e/.auth', { recursive: true })
+  const ids = new Map<NomeConta, string>()
 
   // Restos do coordenacao.spec.ts de execuções anteriores. Excluir a turma leva junto, em
   // cascata, as aulas e as matrículas; só depois as disciplinas ficam livres (FK restrict).
   for (const tabela of ['turmas', 'disciplinas'] as const) {
     const { error } = await admin.from(tabela).delete().like('nome', 'E2E %')
+    if (error) throw error
+  }
+  // Arquivos gravados pelo simulador da API (e2e/apiArquivos.ts); os materiais que os usavam
+  // saíram em cascata com as turmas acima.
+  {
+    const { error } = await admin.from('arquivos').delete().eq('conta_armazenamento', CONTA_E2E)
     if (error) throw error
   }
 
@@ -83,5 +92,18 @@ export default async function globalSetup() {
       origins: [{ origin: origem, localStorage: [...memoria].map(([name, value]) => ({ name, value })) }],
     }
     await writeFile(estadoDe(nome), JSON.stringify(estado, null, 2))
+    ids.set(nome, id)
   }
+
+  // materiais.spec.ts: turma onde a `prof` cria aulas e a `est` está matriculada.
+  const { data: turma, error: erroTurma } = await admin
+    .from('turmas')
+    .insert({ nome: TURMA_MATERIAIS, ano: anoSP() })
+    .select('id')
+    .single()
+  if (erroTurma) throw erroTurma
+  const { error: erroMatricula } = await admin
+    .from('matriculas')
+    .insert({ turma_id: turma.id, estudante_id: ids.get('est') as string })
+  if (erroMatricula) throw erroMatricula
 }

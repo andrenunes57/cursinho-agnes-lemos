@@ -79,3 +79,15 @@ export function formatarDataLonga(iso: string): string {
 export function formatarHora(hora: string | null): string | null {
   return hora ? hora.slice(0, 5) : null
 }
+
+/** "sexta-feira, 13 de novembro" → "Sexta-feira, 13 de novembro". */
+export function primeiraMaiuscula(texto: string): string {
+  return texto.charAt(0).toUpperCase() + texto.slice(1)
+}
+
+/** "Sexta-feira, 13 de novembro, às 14:00" (ou sem o horário, quando não há). */
+export function formatarQuando(data: string, inicio: string | null): string {
+  const dia = primeiraMaiuscula(formatarDataLonga(data))
+  const hora = formatarHora(inicio)
+  return hora ? `${dia}, às ${hora}` : dia
+}

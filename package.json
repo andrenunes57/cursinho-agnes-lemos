@@ -16,7 +16,8 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
-    "db:types": "supabase gen types typescript --local > src/types/database.ts"
+    "db:types": "supabase gen types typescript --local > src/types/database.ts",
+    "gas:push": "clasp push -f -P apps-script"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.119.0",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
+    "@google/clasp": "3.4.1",
     "@playwright/test": "1.65.0",
     "@tailwindcss/vite": "4.3.5",
     "@testing-library/jest-dom": "7.0.1",
