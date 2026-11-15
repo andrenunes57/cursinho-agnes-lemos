@@ -21,7 +21,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 /**
- * Botão com alvo de toque ≥ 44×44 px (SPEC §5.3).
+ * Botão com alvo de clique ≥ 44×44 px (SPEC §5.3).
  *
  * Durante o `carregando`, o botão usa `aria-disabled` e ignora cliques e envios, em vez de
  * `disabled`: um botão `disabled` perde o foco, e quem usa teclado ou leitor de tela voltava

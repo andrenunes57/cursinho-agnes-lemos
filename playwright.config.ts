@@ -2,8 +2,10 @@ import { defineConfig, devices } from '@playwright/test'
 import { execSync } from 'node:child_process'
 import { URL_API_ARQUIVOS_E2E } from './e2e/apiArquivos.ts'
 
-// SPEC §14.3: E2E contra o stack LOCAL do Supabase (`npm run db:start` antes), nos viewports de
-// celular (375×667) e desktop (1280×800). O app é o build de produção servido pelo `vite preview`,
+// SPEC §14.3: E2E contra o stack LOCAL do Supabase (`npm run db:start` antes), em dois viewports
+// de desktop: 1280×800 e 320×640 ("zoom": 1280 px com zoom de 400%, WCAG 1.4.10).
+// O piloto é só desktop (§19), por isso nenhum projeto simula celular ou toque.
+// O app é o build de produção servido pelo `vite preview`,
 // mas com a URL e a chave publishable do stack local (variáveis do processo têm prioridade sobre
 // o `.env.production` no build do Vite).
 const baseURL = 'http://localhost:4173/cursinho-agnes-lemos/'
@@ -54,8 +56,8 @@ export default defineConfig({
   },
   projects: [
     {
-      name: 'celular',
-      use: { ...devices['Desktop Chrome'], viewport: { width: 375, height: 667 }, isMobile: true, hasTouch: true },
+      name: 'zoom',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 320, height: 640 } },
     },
     {
       name: 'desktop',

@@ -1,4 +1,4 @@
-// Compressão de imagens no navegador antes do envio (SPEC RF-14, P1): fotos do celular com mais
+// Compressão de imagens no navegador antes do envio (SPEC RF-14, P1): fotos com mais
 // de 1600 px ou mais de 500 KB viram JPEG de qualidade ~0,8 com o lado maior em até 1600 px.
 
 export const LADO_MAXIMO = 1600

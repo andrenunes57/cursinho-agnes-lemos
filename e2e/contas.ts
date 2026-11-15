@@ -22,13 +22,13 @@ export const CONTAS = {
   est: { email: 'est@teste.local', nome_social: 'Estudante Teste', pronomes: 'ela/dela', papel: 'estudante', status: 'ativo' },
   pend: { email: 'pend@teste.local', nome_social: 'Pessoa Pendente', pronomes: null, papel: 'estudante', status: 'pendente' },
   inativo: { email: 'inativo@teste.local', nome_social: 'Pessoa Inativa', pronomes: null, papel: 'estudante', status: 'inativo' },
-  // Uma conta nova por projeto (celular/desktop), sem onboarding, para o acesso.spec.ts.
-  'novo-celular': { email: 'novo-celular@teste.local', nome_social: null, pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
+  // Uma conta nova por projeto (zoom/desktop), sem onboarding, para o acesso.spec.ts.
+  'novo-zoom': { email: 'novo-zoom@teste.local', nome_social: null, pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
   'novo-desktop': { email: 'novo-desktop@teste.local', nome_social: null, pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
   // Pendentes com onboarding feito, aprovadas pela coordenação no coordenacao.spec.ts (uma por projeto).
-  'aprovar-est-celular': { email: 'aprovar-est-celular@teste.local', nome_social: 'Estudante Aprovação Celular', pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
+  'aprovar-est-zoom': { email: 'aprovar-est-zoom@teste.local', nome_social: 'Estudante Aprovação Zoom', pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
   'aprovar-est-desktop': { email: 'aprovar-est-desktop@teste.local', nome_social: 'Estudante Aprovação Desktop', pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
-  'aprovar-prof-celular': { email: 'aprovar-prof-celular@teste.local', nome_social: 'Docente Aprovação Celular', pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
+  'aprovar-prof-zoom': { email: 'aprovar-prof-zoom@teste.local', nome_social: 'Docente Aprovação Zoom', pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
   'aprovar-prof-desktop': { email: 'aprovar-prof-desktop@teste.local', nome_social: 'Docente Aprovação Desktop', pronomes: null, papel: 'estudante', status: 'pendente', recriar: true },
 } as const satisfies Record<string, Conta>
 
@@ -41,8 +41,8 @@ export const estadoDe = (conta: NomeConta) => `e2e/.auth/${conta}.json`
 export const TURMA_MATERIAIS = 'E2E Turma Materiais'
 
 /** Turmas do chamada.spec.ts, uma por projeto (com a `est` matriculada), para o relatório não
- * misturar as chamadas de celular e desktop, que rodam em paralelo. */
-export const PROJETOS = ['celular', 'desktop'] as const
+ * misturar as chamadas dos projetos zoom e desktop, que rodam em paralelo. */
+export const PROJETOS = ['zoom', 'desktop'] as const
 export const turmaChamada = (projeto: string) => `E2E Turma Chamada ${projeto}`
 
 /** Turma do a11y.spec.ts: o global-setup cria nela uma aula passada da `prof`, com material,

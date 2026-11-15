@@ -39,7 +39,8 @@ export function Select({ rotulo, opcoes, vazio, dica, erro, obrigatorio = false,
         aria-invalid={erro ? true : undefined}
         aria-describedby={descritores}
         aria-required={obrigatorio || undefined}
-        className={`min-h-11 rounded-lg border-2 bg-superficie px-3 text-base ${erro ? 'border-erro' : 'border-borda-forte'} ${className}`}
+        // min-w-0: uma opção longa não alarga a página com zoom alto (320 px).
+        className={`min-h-11 min-w-0 rounded-lg border-2 bg-superficie px-3 text-base ${erro ? 'border-erro' : 'border-borda-forte'} ${className}`}
         {...resto}
       >
         {vazio !== undefined && <option value="">{vazio}</option>}

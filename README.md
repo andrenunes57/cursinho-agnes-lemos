@@ -5,8 +5,8 @@ pré-vestibular popular e trans-referenciado.
 
 Projeto Integrador 2 — Univesp.
 
-- **App:** https://andrenunes57.github.io/cursinho-agnes-lemos/ (instalável no Android: menu do
-  Chrome → *Adicionar à tela inicial*)
+- **App:** https://andrenunes57.github.io/cursinho-agnes-lemos/ (piloto para uso no computador;
+  o layout se adapta ao zoom do navegador até 400%)
 - **Especificação técnica (fonte da verdade):** [SPEC.md](SPEC.md)
 
 ## O que o sistema faz
@@ -24,10 +24,10 @@ nunca exibe o nome nem a foto da conta Google.
 
 | Parte | Tecnologia |
 |---|---|
-| Front-end | React + TypeScript + Vite + React Router + Tailwind CSS, publicado no GitHub Pages (PWA só com manifest) |
+| Front-end | React + TypeScript + Vite + React Router + Tailwind CSS, publicado no GitHub Pages |
 | Back-end | Supabase (plano Free): login com Google, PostgreSQL com Row Level Security e RPCs |
 | Arquivos | Google Drive, via uma "API de Arquivos" em Google Apps Script (`apps-script/`) |
-| Testes | Vitest + Testing Library, Playwright + axe (acessibilidade, 375 px e 1280 px) e pgTAP (banco) |
+| Testes | Vitest + Testing Library, Playwright + axe (acessibilidade, 1280 px e 320 px, que equivale a zoom de 400%) e pgTAP (banco) |
 
 ## Como rodar
 

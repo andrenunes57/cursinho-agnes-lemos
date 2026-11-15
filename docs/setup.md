@@ -88,7 +88,7 @@ Abra http://localhost:5173/cursinho-agnes-lemos/.
 |---|---|---|
 | Qualidade (o mesmo que o CI roda) | `npm run lint && npm run typecheck && npm test && npm run build` | Não |
 | Testes do banco (RLS e RPCs, pgTAP) | `npm run db:reset && npm run db:test` | Sim |
-| E2E + acessibilidade (Playwright + axe), em 375 px e 1280 px | `npm run test:e2e` | Sim |
+| E2E + acessibilidade (Playwright + axe), em 1280 px e 320 px (zoom de 400%) | `npm run test:e2e` | Sim |
 
 Observações:
 

@@ -27,29 +27,3 @@ test('rota inexistente mostra "Página não encontrada" (fallback de SPA)', asyn
   await expect(page.getByRole('heading', { level: 1, name: 'Página não encontrada' })).toBeVisible()
   await verificarPagina(page)
 })
-
-test('o app é instalável: manifest com escopo da base e ícones 192/512 (RF-28)', async ({ page, request }) => {
-  await page.goto('./entrar')
-  const href = await page.locator('link[rel="manifest"]').getAttribute('href')
-  expect(href).toBe('/cursinho-agnes-lemos/manifest.webmanifest')
-
-  const urlManifest = new URL(href as string, page.url())
-  const resposta = await request.get(urlManifest.href)
-  expect(resposta.ok()).toBe(true)
-  const manifest = (await resposta.json()) as {
-    name: string
-    display: string
-    start_url: string
-    scope: string
-    icons: { src: string; sizes: string; purpose: string }[]
-  }
-  expect(manifest).toMatchObject({ display: 'standalone', start_url: './', scope: './' })
-  expect(new URL(manifest.start_url, urlManifest).pathname).toBe('/cursinho-agnes-lemos/')
-  expect(manifest.icons.map((i) => `${i.sizes}:${i.purpose}`)).toEqual(['192x192:any', '512x512:any', '512x512:maskable'])
-
-  for (const icone of [...manifest.icons.map((i) => i.src), 'apple-touch-icon.png']) {
-    const png = await request.get(new URL(icone, urlManifest).href)
-    expect(png.ok(), icone).toBe(true)
-    expect(png.headers()['content-type']).toBe('image/png')
-  }
-})

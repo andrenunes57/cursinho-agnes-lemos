@@ -10,7 +10,7 @@ export async function semViolacoesGraves(page: Page) {
   expect(graves, `Violações de acessibilidade em ${page.url()}`).toEqual([])
 }
 
-/** axe sem violações graves + nenhuma rolagem horizontal (SPEC §5.3: layout em 320–375 px). */
+/** axe sem violações graves + nenhuma rolagem horizontal (SPEC §5.3: layout em 320 px, zoom de 400%). */
 export async function verificarPagina(page: Page) {
   await semViolacoesGraves(page)
   const { largura, viewport } = await page.evaluate(() => ({

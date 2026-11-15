@@ -32,9 +32,9 @@ async function criarAula(page: Page, titulo: string, turma: string, data?: strin
   return page.url().split('?')[0]
 }
 
-/** Linha da estudante no relatório: tabela no desktop, cartão no celular (SPEC §5.3). */
+/** Linha da estudante no relatório: tabela no desktop, cartão em janela estreita (zoom alto, SPEC §5.3). */
 async function conferirRelatorio(page: Page, projeto: string) {
-  if (projeto === 'celular') {
+  if (projeto === 'zoom') {
     const cartao = page.getByRole('listitem').filter({ hasText: ESTUDANTE })
     await expect(cartao).toHaveText(/Aulas com chamada\s*1\s*Presentes\s*0\s*Ausentes\s*0\s*Justificadas\s*1\s*Frequência\s*0,0%/)
   } else {

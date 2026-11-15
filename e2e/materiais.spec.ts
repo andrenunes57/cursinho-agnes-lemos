@@ -6,7 +6,7 @@ import { estadoDe, TURMA_MATERIAIS } from './contas.ts'
 
 // SPEC §13 F4 / §14.3 (materiais.spec.ts): a docente cria a aula e os 4 tipos de material, todos
 // nascem rascunho; publica 3; a estudante da turma vê só os publicados. A API de Arquivos é
-// simulada (e2e/apiArquivos.ts). Celular e desktop rodam em paralelo no mesmo banco, por isso o
+// simulada (e2e/apiArquivos.ts). Os projetos zoom e desktop rodam em paralelo no mesmo banco, por isso o
 // título da aula leva o nome do projeto.
 
 test.use({ storageState: estadoDe('prof') })

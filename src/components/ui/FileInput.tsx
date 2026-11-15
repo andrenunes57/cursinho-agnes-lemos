@@ -15,8 +15,7 @@ type Props = {
 }
 
 /**
- * Seleção de arquivo com <label>, dica e erro ligados por aria-describedby (SPEC §5.3). No
- * Android, o seletor do sistema já oferece a câmera para tirar a foto na hora.
+ * Seleção de arquivo com <label>, dica e erro ligados por aria-describedby (SPEC §5.3).
  */
 export function FileInput({ rotulo, dica, erro, obrigatorio = false, accept, arquivo, onChange, disabled, ref }: Props) {
   const id = useId()

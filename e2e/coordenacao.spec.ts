@@ -5,7 +5,7 @@ import { CONTAS, estadoDe } from './contas.ts'
 
 // SPEC §13 F3 / §14.3 (coordenacao.spec.ts): a coordenação aprova uma estudante (com turma) e uma
 // docente, cria aulas para a docente, reatribui e exclui, gerencia matrículas, turmas e
-// disciplinas. Os nomes levam o projeto (celular/desktop) porque os dois rodam em paralelo no
+// disciplinas. Os nomes levam o projeto (zoom/desktop) porque os dois rodam em paralelo no
 // mesmo banco; o global-setup apaga os "E2E …" da execução anterior.
 
 test.use({ storageState: estadoDe('coord') })
@@ -19,7 +19,7 @@ const cartao = (page: Page, texto: string | RegExp): Locator => page.getByRole('
 /** Aba (role=tab) pelo começo do rótulo, que traz a contagem: "Pendentes (3)". */
 const aba = (page: Page, nome: string) => page.getByRole('tab', { name: new RegExp(`^${nome}`) })
 
-/** axe sem violações graves + nenhuma rolagem horizontal (SPEC §5.3: layout em 320–375 px). */
+/** axe sem violações graves + nenhuma rolagem horizontal (SPEC §5.3: layout em 320 px, zoom de 400%). */
 async function verificar(page: Page) {
   await semViolacoesGraves(page)
   const { largura, viewport } = await page.evaluate(() => ({
@@ -29,13 +29,13 @@ async function verificar(page: Page) {
   expect(largura, `Rolagem horizontal em ${page.url()}`).toBeLessThanOrEqual(viewport)
 }
 
-async function abrirMenuSeCelular(page: Page) {
+async function abrirMenuSeEstreito(page: Page) {
   const botaoMenu = page.getByRole('button', { name: 'Menu' })
   if (await botaoMenu.isVisible()) await botaoMenu.click()
 }
 
 test('ciclo da coordenação: disciplina, turma, aprovação, cronograma e matrículas', async ({ page, browser }, info) => {
-  const projeto = info.project.name as 'celular' | 'desktop'
+  const projeto = info.project.name as 'zoom' | 'desktop'
   const est = CONTAS[`aprovar-est-${projeto}`]
   const prof = CONTAS[`aprovar-prof-${projeto}`]
   const disciplina = `E2E Disciplina ${projeto}`
@@ -203,7 +203,7 @@ test('ciclo da coordenação: disciplina, turma, aprovação, cronograma e matr�
       const outra = await contexto.newPage()
       await outra.goto('./')
       await expect(outra.getByRole('heading', { level: 1, name: `Boas-vindas, ${CONTAS[conta].nome_social}!` })).toBeVisible()
-      await abrirMenuSeCelular(outra)
+      await abrirMenuSeEstreito(outra)
       await expect(outra.getByRole('navigation', { name: 'Menu principal' }).getByRole('link', { name: item }).first()).toBeVisible()
       await contexto.close()
     }

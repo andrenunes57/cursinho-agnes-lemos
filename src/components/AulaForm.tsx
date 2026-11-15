@@ -86,7 +86,7 @@ export function AulaForm({ inicial, turmas, disciplinas, docentes, enviando, tex
         onChange={(e) => setTitulo(e.target.value)}
         erro={erro('titulo')}
       />
-      {/* grid-cols-1 = minmax(0, 1fr): sem isso, um <select> com opção longa alarga a página no celular. */}
+      {/* grid-cols-1 = minmax(0, 1fr): sem isso, um <select> com opção longa alarga a página com zoom alto. */}
       <div className="grid grid-cols-1 gap-4 largo:grid-cols-2">
         <Select
           ref={refTurma}

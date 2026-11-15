@@ -14,7 +14,7 @@ import {
 
 // SPEC §13 F7 / §14.3 (a11y.spec.ts): fumaça por papel. Cada rota de §11 é aberta com a conta do
 // papel e precisa mostrar o <h1> esperado, passar no axe (WCAG 2.0/2.1 A e AA, 0 serious/critical)
-// e não ter rolagem horizontal (o projeto "celular" roda em 375×667). As rotas com `:id` usam a
+// e não ter rolagem horizontal (o projeto "zoom" roda em 320×640, como 1280 px com zoom de 400%). As rotas com `:id` usam a
 // aula e a tarefa criadas pelo global-setup (TURMA_A11Y). As rotas públicas ficam no smoke.spec.ts
 // e /primeiro-acesso no acesso.spec.ts, que é dono das contas novas.
 

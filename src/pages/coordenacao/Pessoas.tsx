@@ -148,7 +148,8 @@ function Pendentes({ pessoas, turmas, avisar }: { pessoas: Pessoa[]; turmas: Tur
         ))}
       </ul>
 
-      <fieldset className="flex flex-col gap-4 rounded-xl border-2 border-marca bg-marca-clara p-4">
+      {/* min-w-0: o <fieldset> tem min-width: min-content e alargava a página com zoom de 400%. */}
+      <fieldset className="flex min-w-0 flex-col gap-4 rounded-xl border-2 border-marca bg-marca-clara p-4">
         <legend className="px-1 text-lg font-semibold">Aprovar as pessoas selecionadas</legend>
         <RadioGroup legenda="Papel" nome="papel-aprovacao" opcoes={OPCOES_PAPEL} valor={papel} onChange={setPapel} />
         {papel === 'estudante' && (

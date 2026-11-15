@@ -57,13 +57,15 @@ function LinkMenu({ item }: { item: ItemMenu }) {
 
 /**
  * Layout da área logada e ativa (SPEC §11): cabeçalho com nome social + pronomes e "Sair"
- * (nunca foto), navegação lateral acima de 768 px e barra inferior no celular.
+ * (nunca foto), navegação lateral acima de 768 px e barra inferior abaixo disso.
+ * A janela estreita não é para celular (o piloto é só desktop): é o desktop com zoom alto
+ * (400% em 1280 px = 320 px, WCAG 1.4.10).
  */
 export function LayoutApp() {
   const { perfil, sair } = useAuth()
   const lecionaAlguma = useLecionaAlgumaAula()
   const { pathname } = useLocation()
-  // Guarda a rota em que o menu do celular foi aberto: navegar o fecha sem precisar de efeito.
+  // Guarda a rota em que o menu da barra inferior foi aberto: navegar o fecha sem precisar de efeito.
   const [menuAbertoEm, setMenuAbertoEm] = useState<string | null>(null)
   const menuAberto = menuAbertoEm === pathname
   const fecharMenu = () => setMenuAbertoEm(null)
@@ -84,7 +86,7 @@ export function LayoutApp() {
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-20 border-b border-borda bg-superficie">
-        {/* No celular o nome vai para uma 2ª linha; acima de 768 px fica ao lado do "Sair". */}
+        {/* Em janela estreita o nome vai para uma 2ª linha; acima de 768 px fica ao lado do "Sair". */}
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-3 px-4 py-1">
           <Link to="/" className="min-h-11 content-center font-bold text-marca">
             Cursinho Agnes Lemos
@@ -127,7 +129,7 @@ export function LayoutApp() {
         </main>
       </div>
 
-      {/* Celular (≤ 768 px): barra inferior com os primeiros itens + "Menu" com todos. */}
+      {/* Janela estreita (≤ 768 px, zoom alto): barra inferior com os primeiros itens + "Menu" com todos. */}
       <nav aria-label="Menu principal" className="fixed inset-x-0 bottom-0 z-20 largo:hidden">
         {menuAberto && (
           <div id={idMenu} className="max-h-[70dvh] overflow-y-auto border-t border-borda bg-superficie p-3 shadow-lg">

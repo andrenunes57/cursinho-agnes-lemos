@@ -20,7 +20,7 @@ const INICIO: ItemMenu = { rota: '/', rotulo: 'Início', icone: 'inicio' }
 const MINHAS_AULAS: ItemMenu = { rota: '/docente/aulas', rotulo: 'Minhas aulas', icone: 'minhas-aulas' }
 
 /**
- * Seções do menu conforme o papel (SPEC §11). A ordem importa: no celular, os 4 primeiros
+ * Seções do menu conforme o papel (SPEC §11). A ordem importa: em janela estreita (zoom alto), os 4 primeiros
  * itens ficam na barra inferior e o resto vai para "Menu".
  * Coordenação vê "Minhas aulas" só se for docente de alguma aula.
  */
@@ -50,5 +50,5 @@ export function itensDoMenu(papel: Enums<'papel_usuario'>, lecionaAlguma: boolea
   }
 }
 
-/** Quantos itens cabem na barra inferior do celular (o 5º botão é "Menu"). */
+/** Quantos itens cabem na barra inferior da janela estreita (o 5º botão é "Menu"). */
 export const ITENS_NA_BARRA = 4

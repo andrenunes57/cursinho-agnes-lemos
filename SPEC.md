@@ -50,7 +50,7 @@ A gestão depende de **ferramentas e contas pessoais de voluntários** (e-mails,
 
 ### 1.3 Objetivo
 
-Um sistema web que funcione no celular e centralize quatro coisas:
+Um sistema web, usado no computador (o piloto é só desktop; §19), que centralize quatro coisas:
 
 1. **Presença** dos estudantes, por aula.
 2. **Materiais por aula**, que também servem ao planejamento de aula pelos docentes.
@@ -67,7 +67,7 @@ Capacidade alvo: **~100 pessoas**. A arquitetura não foi pensada para escalar a
 | P2 | **Centralização** | Os dados ficam em serviços do cursinho, não em contas pessoais (após a transferência, ver §16.2). |
 | P3 | **Acolhimento** | Mostrar sempre o **nome social** e os pronomes. **Nunca** exibir o nome nem a foto da conta Google. Usar linguagem inclusiva. |
 | P4 | **Dados mínimos (LGPD)** | Coletar apenas nome social, pronomes e e-mail. Nada além. |
-| P5 | **Mobile-first e leve** | Pensar em celulares simples e em dados móveis limitados. |
+| P5 | **Desktop e leve** | O piloto é usado no computador (§19). Pensar em computadores simples e conexões lentas; o layout se adapta ao zoom alto (§5.3). |
 | P6 | **Simplicidade** | O sistema deve caber em ~8h de implementação. Na dúvida, fica a opção mais simples que atende o requisito. |
 
 ---
@@ -128,7 +128,7 @@ Formato de cada ADR: **contexto → decisão → alternativas descartadas**.
 ### ADR-04 — Login somente com Google
 
 - **Decisão.** Supabase Auth com o provider Google e fluxo **PKCE**. Não há senhas nem SMTP.
-- **Por quê.** Quase todo celular Android já tem conta Google, e criar uma é grátis. Assim não existe suporte de "esqueci a senha". Além disso, o SMTP padrão do Supabase só entrega e-mails para a equipe do projeto.
+- **Por quê.** Quase todo mundo já tem conta Google, e criar uma é grátis. Assim não existe suporte de "esqueci a senha". Além disso, o SMTP padrão do Supabase só entrega e-mails para a equipe do projeto.
 - **Publicação.** Com escopos básicos (`openid`, `email`, `profile`), o app OAuth pode ir para **produção sem verificação do Google**. A tela de consentimento mostra o domínio `*.supabase.co`, o que é aceitável.
 - **Nome social.** O nome e a foto vindos do Google **não são copiados nem exibidos**. A pessoa informa o nome social no primeiro acesso.
 
@@ -177,7 +177,7 @@ Formato de cada ADR: **contexto → decisão → alternativas descartadas**.
 | **Banco de dados** | PostgreSQL (Supabase): modelo relacional, DER, *migrations* versionadas, constraints, RLS | §8, §9 |
 | **Nuvem** | Supabase Cloud (Auth + Postgres), GitHub Pages (hospedagem), Google Apps Script + Google Drive (arquivos), GitHub Actions (CI/CD) | §6, §12 |
 | **API** | API REST gerada pelo PostgREST; **RPCs** próprias (`registrar_chamada`, `avaliar_entrega`…); **API de Arquivos** própria (Apps Script), que consome a Google Drive API (DriveApp) e a API REST do Supabase | §9.4, §10 |
-| **Acessibilidade** | Meta WCAG 2.1 AA; testes automáticos com axe em todas as páginas; checklist manual (teclado, TalkBack) | §5.3, §14 |
+| **Acessibilidade** | Meta WCAG 2.1 AA; testes automáticos com axe em todas as páginas; checklist manual (teclado, Narrador do Windows) | §5.3, §14 |
 | **Controle de versão** | Git + GitHub (código, *migrations* SQL e o código do Apps Script via `clasp`); Conventional Commits | §13, §15 |
 | **Testes** | pgTAP (RLS e RPCs no banco), Vitest (unidade e componentes), Playwright (E2E + acessibilidade) | §14 |
 
@@ -260,7 +260,7 @@ Formato de cada ADR: **contexto → decisão → alternativas descartadas**.
 | RF-25 | Armazenamento | P1 | A coordenação vê o uso do Drive (usado/limite, com alerta a partir de 80%), o total por finalidade e os **arquivos órfãos** (não referenciados, com mais de 24h), com opção de excluir. |
 | RF-26 | Configurações | P0 | A coordenação edita a URL ativa da API de Arquivos e o rótulo da conta de armazenamento, sem precisar republicar o app. |
 | RF-27 | Aviso de privacidade | P0 | A página pública `/privacidade` informa quais dados são coletados, para quê, quem vê, onde ficam guardados, por quanto tempo e como pedir a exclusão (§5.5). |
-| RF-28 | App instalável (PWA) | P1 | Tem manifest e ícone para "Adicionar à tela inicial" no Android. Não há modo offline. |
+| RF-28 | ~~App instalável (PWA)~~ | — | **Removido** (14/11/2026, §19): o piloto é só desktop. |
 
 ### 4.7 Fora de escopo (decidido; não implementar)
 
@@ -295,12 +295,12 @@ Formato de cada ADR: **contexto → decisão → alternativas descartadas**.
 - HTML semântico: um `<h1>` por página, `<main>`, `<nav>`, link "Pular para o conteúdo" e `lang="pt-BR"`.
 - Todo campo tem `<label>`. O erro é anunciado em texto (`aria-describedby`), nunca indicado só por cor.
 - Foco visível. O foco vai para o `<h1>` a cada troca de rota. Tudo funciona por teclado.
-- Contraste ≥ 4,5:1 (texto normal) e ≥ 3:1 (componentes). Alvos de toque ≥ 44×44 px.
+- Contraste ≥ 4,5:1 (texto normal) e ≥ 3:1 (componentes). Alvos de clique ≥ 44×44 px.
 - Toasts e avisos anunciados por `aria-live="polite"`. Respeitar `prefers-reduced-motion`.
-- O layout funciona com zoom de 200% e em 320 px de largura. No celular, tabelas viram cartões.
+- O layout funciona com zoom de até 400% (1280 px com 400% = 320 px de largura, WCAG 1.4.10). Em janela estreita, o menu vai para a barra inferior e as tabelas viram cartões.
 - Ícones sempre acompanhados de texto ou de `aria-label`.
 - Vídeos do YouTube embutidos com `title` descritivo.
-- **Verificação:** axe (Playwright) sem violações *serious* ou *critical*, mais um roteiro manual com teclado e TalkBack (§14).
+- **Verificação:** axe (Playwright) sem violações *serious* ou *critical*, mais um roteiro manual com teclado e o Narrador do Windows (§14).
 
 ### 5.4 Linguagem e identidade
 
@@ -359,8 +359,8 @@ Formato de cada ADR: **contexto → decisão → alternativas descartadas**.
 
 ```mermaid
 flowchart LR
-  subgraph Cliente["Navegador (celular/PC)"]
-    SPA["SPA React (PWA)<br/>GitHub Pages"]
+  subgraph Cliente["Navegador (desktop)"]
+    SPA["SPA React<br/>GitHub Pages"]
   end
   subgraph Supabase["Supabase Free (sa-east-1)"]
     AUTH["Auth (Google, PKCE)"]
@@ -425,7 +425,6 @@ As versões exatas são fixadas na F0 e registradas no §6.5.
 | Dados no cliente | `@supabase/supabase-js` v2 + `@tanstack/react-query` | Cache e estados de carregamento e erro |
 | Estilo | Tailwind CSS v4 (plugin `@tailwindcss/vite`) | Sem biblioteca de componentes pesada; componentes próprios em `src/components/ui` |
 | Ícones | `lucide-react` | Importação por ícone |
-| PWA (P1) | `public/manifest.webmanifest` escrito à mão (F7; §19) | Só manifest + ícones, sem service worker nem cache offline |
 | Banco/Auth/API | Supabase (Postgres, PostgREST, GoTrue) | CLI `supabase` como devDependency (`npx supabase …`) |
 | Arquivos | Google Apps Script (V8) + DriveApp | Versionado em `apps-script/` com `@google/clasp` |
 | Testes | pgTAP (`supabase test db`), Vitest + Testing Library, Playwright + `@axe-core/playwright` | §14 |
@@ -493,7 +492,6 @@ Versões instaladas na F0 (13/11/2026), todas exatas no `package.json` (`.npmrc`
 | oxlint | 1.93.0 |
 | GitHub Actions | checkout@v7, setup-node@v7, configure-pages@v6, upload-pages-artifact@v5, deploy-pages@v5 |
 | @google/clasp | 3.4.1 (F4) |
-| PWA (P1) | sem dependência: manifest estático (F7) |
 | lucide-react | 1.72.0 (F2) |
 
 ---
@@ -982,7 +980,7 @@ statusArmazenamento(): Promise<{ usadoBytes: number; limiteBytes: number; conta:
 ## 11. Telas e rotas
 
 **Layout:**
-- Mobile-first: barra de navegação inferior (≤ 768 px) e lateral (> 768 px).
+- Responsivo por causa do zoom (§5.3): navegação lateral (> 768 px) e barra inferior (≤ 768 px, o desktop com zoom alto).
 - O menu mostra as seções do papel da pessoa. Quem é coordenação vê também "Minhas aulas" se for docente de alguma.
 - **Cabeçalho:** nome social + pronomes e o botão "Sair". Nunca aparece foto.
 
@@ -1199,11 +1197,10 @@ Todos estão na conta pessoal do dev (ADR-08). Nenhum valor abaixo é secreto.
 ### F7 — Qualidade e entrega (45 min) · SPEC §14, §16
 
 - E2E de fumaça por papel + axe em todas as rotas.
-- PWA (P1).
 - Configurar o cron-job.org.
 - `docs/setup.md`, `docs/operacao.md` e `docs/transferencia-de-contas.md`.
 - `README.md`.
-- Roteiro manual de aceite no celular (§14.4).
+- Roteiro manual de aceite no desktop (§14.4).
 - Deploy final.
 - **DoD:**
   - checklist do §14.4 completo
@@ -1213,12 +1210,11 @@ Todos estão na conta pessoal do dev (ADR-08). Nenhum valor abaixo é secreto.
 ### 13.9 Lista de corte (nesta ordem, se atrasar)
 
 1. CSV (RF-24)
-2. PWA (RF-28)
-3. Arquivos órfãos e status de armazenamento (RF-25)
-4. Compressão de imagem (RF-14), substituída por limite de 15 MB + aviso
-5. Filtros e ordenação de materiais
-6. Contadores do Início da coordenação
-7. `db-e2e.yml` no CI (rodar só localmente)
+2. Arquivos órfãos e status de armazenamento (RF-25)
+3. Compressão de imagem (RF-14), substituída por limite de 15 MB + aviso
+4. Filtros e ordenação de materiais
+5. Contadores do Início da coordenação
+6. `db-e2e.yml` no CI (rodar só localmente)
 
 **Nunca cortar:** RLS + pgTAP, chamada, entregas/avaliação, aprovação de cadastro, acessibilidade básica.
 
@@ -1269,18 +1265,18 @@ Todos estão na conta pessoal do dev (ADR-08). Nenhum valor abaixo é secreto.
   - `tarefas.spec.ts`
   - `chamada.spec.ts`
   - `a11y.spec.ts`: percorre todas as rotas por papel e roda `AxeBuilder` com as tags `wcag2a`, `wcag2aa`, `wcag21a` e `wcag21aa`; **0 violações** *serious* ou *critical*
-- **Viewports:** 375×667 (celular) e 1280×800.
+- **Viewports (só desktop):** 1280×800 e 320×640 ("zoom": 1280 px com zoom de 400%).
 
-### 14.4 Roteiro manual de aceite (celular Android real + desktop)
+### 14.4 Roteiro manual de aceite (desktop)
 
 1. Login Google com uma conta nova → onboarding → aguardando.
 2. Coordenação aprova a conta como estudante na Turma.
-3. Docente cria uma aula, envia um **PDF** e uma **foto** (pela câmera), adiciona um vídeo do YouTube e um texto, e publica 3 dos 4 materiais.
+3. Docente cria uma aula, envia um **PDF** e uma **foto**, adiciona um vídeo do YouTube e um texto, e publica 3 dos 4 materiais.
 4. A estudante vê só os 3 publicados. Abre o PDF no visualizador do Drive. O vídeo toca embutido.
 5. Docente cria uma tarefa com conceito. A estudante envia uma foto e depois reenvia. A docente avalia. A estudante vê o conceito e a devolutiva e não consegue mais reenviar.
 6. Docente faz a chamada (1 ausente e 1 justificada) e depois corrige. A estudante vê a frequência. A coordenação vê o relatório (e o CSV, se P1) e **não** tem botão de chamada.
 7. Teclado-only no desktop (Tab/Shift+Tab/Enter/Espaço) em: login, onboarding, chamada e envio de entrega.
-8. TalkBack: um passe rápido em onboarding e chamada.
+8. Narrador do Windows: um passe rápido em onboarding (`/perfil` usa o mesmo formulário) e chamada.
 9. Nenhuma tela mostra nome ou foto da conta Google.
 
 ### 14.5 Opcional (para a demo do PI)
@@ -1292,14 +1288,14 @@ Uma coleção Postman (ou arquivo `.http`) documentando as RPCs e a API de Arqui
 ## 15. Regras para a implementação (anti-alucinação)
 
 1. **A SPEC é a fonte da verdade.** Não implementar nada fora do §4. Se algo faltar ou estiver ambíguo, **perguntar** e registrar a decisão no §19 antes de codar.
-2. **Documentação atual sempre.** Antes de escrever código com supabase-js, Supabase CLI, React Router, Vite, Tailwind v4, React Query, vite-plugin-pwa, Vitest, Playwright, axe, clasp ou Apps Script, **consultar o Context7** (`resolve-library-id` → `query-docs`). Não confiar em memória para assinaturas de API.
+2. **Documentação atual sempre.** Antes de escrever código com supabase-js, Supabase CLI, React Router, Vite, Tailwind v4, React Query, Vitest, Playwright, axe, clasp ou Apps Script, **consultar o Context7** (`resolve-library-id` → `query-docs`). Não confiar em memória para assinaturas de API.
 3. **Versões fixas.** As versões ficam exatas no `package.json` (sem `^`). As escolhidas na F0 são registradas no §6.5.
 4. **Tipos do banco gerados** (`npm run db:types`), nunca escritos à mão. Rodar de novo após cada migration.
 5. **Migrations imutáveis.** Uma migration já aplicada em produção nunca é editada: cria-se uma nova.
 6. **O banco é a barreira de segurança.** Guardas de rota e botões escondidos são só UX. Toda regra de acesso precisa existir em RLS/RPC **e** ter teste pgTAP.
 7. **Sem segredos no repositório.** Só a *publishable key* vai para o front-end.
 8. **pt-BR e linguagem inclusiva** em toda a UI. Identificadores de domínio em português (tabelas, colunas, rotas). Termos técnicos podem ficar em inglês (hooks, componentes utilitários).
-9. **Fechamento de fase:** só com DoD verde (`lint`, `typecheck`, `test`, `db:test` quando o banco mudou), verificação no viewport de 375 px e commit.
+9. **Fechamento de fase:** só com DoD verde (`lint`, `typecheck`, `test`, `db:test` quando o banco mudou), verificação em 320 px de largura (zoom de 400%) e commit.
 10. **Ambiente desta máquina:** usar `py` (nunca `python`) e `pwsh` (nunca `powershell`). O shell do Claude Code é Git Bash.
 
 ---
@@ -1460,6 +1456,7 @@ Guardar no Drive do cursinho, numa **pasta restrita à coordenação**. **Nunca*
 | 14/11/2026 | **Cron-job.org adiado por decisão do dev.** O job não será cadastrado agora. O dev sabe que o Supabase Free pausa o projeto após cerca de 7 dias de pouca atividade (reativação pelo painel em até 1 ano, com os dados preservados) e vai decidir depois se cadastra. Se cadastrar: seguir `docs/operacao.md` §2. Recomendação registrada: várias execuções por dia (ex.: a cada 6 h), porque o Supabase avalia se a atividade da última semana foi *suficiente*, e não só se houve um acesso. | Usuário |
 | 14/11/2026 | **Teste só com teclado, continuação (produção):** login (Sair → "Entrar com Google" pelo Enter), chamada da aula de 13/11 (Justificada pelas setas → "Salvar chamada" → de volta a Ausente), tarefa "F7 – Teclado" criada e publicada pela docente e entrega com link + comentário enviada pela estudante, tudo pelo teclado; depois a tarefa de teste foi excluída (a entrega saiu junto). **3º achado, corrigido:** os formulários abertos na própria página ("Nova tarefa", "Nova aula", "Adicionar material", "Nova turma", "Nova disciplina" e os "Editar …") deixavam o foco no `body` ao abrir e ao fechar, porque o botão some quando vira formulário. Agora o `FocarAoAbrir` foca o 1º campo ao abrir e devolve o foco ao botão ao salvar ou cancelar; e um resgate global (`src/lib/foco.ts`, ligado no `RaizApp`) leva ao `<h1>` o foco que sumiria junto com o elemento (formulário recriado depois de enviar a entrega, item excluído). Vitest (3 casos) e E2E de teclado da docente. **Item 9 (§14.4):** com as 3 contas de produção, em todas as rotas de cada papel (31 telas, abas incluídas), nenhuma imagem e nenhum nome da conta Google na tela; na conta da coordenação o nome social é igual ao nome do Google, por isso a verificação de texto vale para a docente ("DJ …" no Google) e a estudante. | Implementação (F7) |
 | 14/11/2026 | **Teste só com teclado (§14.4 item 7), em produção via Claude in Chrome, 2 achados corrigidos:** (1) o `Button` ficava `disabled` durante o `carregando`, e o Chrome tirava o foco dele: depois de cada "Salvar" (chamada, formulários) o foco ia para o `body` e a pessoa voltava ao topo da página. Agora usa `aria-disabled`, mantém o foco e ignora cliques e envios (inclusive o Enter num campo) enquanto carrega; `disabled` continua valendo quando é passado explicitamente. (2) "Pular para o conteúdo" apontava para o `<main>`, que não é focável, e o foco ficava no `body`; agora leva o foco ao `<h1>` (ou ao `<main>`). Vitest do `Button` (4 casos) e E2E do link de pular. | Implementação (F7) |
+| 14/11/2026 | **Piloto só no desktop.** O dev desativou o uso no celular para cortar complexidade. Saíram: o PWA (RF-28: manifest, ícones e o teste de "instalável"), o projeto de E2E que simulava celular com toque (375×667) e as menções a Android, câmera e TalkBack. O layout de janela estreita (barra inferior com "Menu", tabelas em cartões) **ficou**, porque é ele que atende o zoom de 400% no desktop (WCAG 1.4.10); o E2E agora roda em 1280×800 e em 320×640 ("zoom"). No §14.4, o TalkBack virou o Narrador do Windows e o roteiro é todo no desktop. As entradas anteriores sobre o Android ficam como histórico. Em 320 px, o E2E achou rolagem horizontal em `/coordenacao/pessoas` (355 px): o `<fieldset>` de aprovação e o `<select>` de turma cresciam até a opção mais longa; corrigido com `min-w-0` (no `Select` vale para todas as telas). Vitest 184/184, E2E + axe 104/104 (zoom e desktop), pgTAP 244. | Usuário |
 D
 ---
 

@@ -18,13 +18,19 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 - **F5 concluída** (14/11/2026), validada em produção nos 3 tipos de avaliação.
 - **F6 concluída** (14/11/2026), validada em produção: chamada e correção, % (50% em 2 aulas), CSV,
   coordenação só leitura com a RPC recusando e Armazenamento.
-- **F7 em andamento** (14/11/2026). Feito: `e2e/a11y.spec.ts` (todas as rotas por papel), PWA com
-  manifest estático (`public/manifest.webmanifest`, sem `vite-plugin-pwa`), `docs/` e README.
-  Falta: o roteiro §14.4 no celular (itens 1, 7, 8, 9 e instalar o PWA) e o deploy final.
+- **Piloto só no desktop** (decisão do dev, SPEC §19): sem PWA e sem simulação de celular. O layout
+  de janela estreita (barra inferior, tabelas em cartões) **fica**: atende o zoom de 400% (WCAG 1.4.10).
+  O E2E roda nos projetos `desktop` (1280×800) e `zoom` (320×640).
+- **F7 em andamento** (14/11/2026). Feito: `e2e/a11y.spec.ts` (todas as rotas por papel), `docs/` e README.
+  Itens 7 (teclado: login, chamada, entrega) e 9 do §14.4 feitos em produção (SPEC §19), com 3
+  correções de foco (`Button` com `aria-disabled`, "Pular para o conteúdo", `FocarAoAbrir` +
+  `lib/foco.ts`). Falta, no desktop: item 1 + onboarding só com teclado (conta Google nova) e
+  item 8 (Narrador do Windows, com o dev).
+- Formulário aberto por botão na própria página: envolver em `ui/FocarAoAbrir`.
 - **Cron-job.org adiado pelo dev** (SPEC §19): sem ping, o Supabase pode pausar após ~7 dias sem uso.
   Não cadastrar nem cobrar; se o dev decidir, seguir `docs/operacao.md` §2.
-- O Chrome do dev não reduz a janela abaixo de 1920 px: a conferência em 375 px é feita com a página
-  num `<iframe>` de 375 px.
+- O Chrome do dev não reduz a janela abaixo de 1920 px: a conferência em 320 px é feita com a página
+  num `<iframe>` de 320 px.
 - Testes que importam (direta ou indiretamente) `lib/supabase` precisam de `vi.mock('../lib/supabase', ...)`:
   no CI não há `.env.local`. Para reproduzir o CI: `VITE_SUPABASE_URL= npx vitest run`.
 - API de Arquivos: `npm run gas:push` e depois `npx clasp create-deployment -i <deployment id>` (§12.3.1),
@@ -73,5 +79,5 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 - **Máquina:** usar `py` (nunca `python`) e `pwsh` (nunca `powershell`). O shell do Claude Code é Git Bash.
 - **Fechar uma fase** exige:
   - DoD verde
-  - conferência no viewport de 375 px
+  - conferência em 320 px de largura (zoom de 400%)
   - commit em Conventional Commits, por exemplo `feat(f1): ...`

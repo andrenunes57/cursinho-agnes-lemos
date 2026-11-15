@@ -108,7 +108,7 @@ export function RelatorioFrequencia({ turmas, exportar = false }: Props) {
           )}
         </div>
 
-        {/* Desktop: tabela. Celular: cartões (SPEC §5.3). */}
+        {/* Janela larga: tabela. Janela estreita (zoom alto): cartões (SPEC §5.3). */}
         <div className="hidden largo:block">
           <table className="w-full border-collapse rounded-xl bg-superficie text-left">
             <caption className="sr-only">Frequência de {titulo}</caption>

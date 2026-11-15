@@ -8,7 +8,7 @@ import { estadoDe, TURMA_MATERIAIS } from './contas.ts'
 // a aula e as tarefas (nota com prazo já vencido, conceito, devolutiva, e uma em rascunho); a
 // estudante envia (arquivo + reenvio, link, comentário); a docente avalia; a estudante vê a
 // avaliação e não consegue mais reenviar. A API de Arquivos é simulada (e2e/apiArquivos.ts).
-// Celular e desktop rodam em paralelo no mesmo banco, por isso os títulos levam o nome do projeto.
+// Os projetos zoom e desktop rodam em paralelo no mesmo banco, por isso os títulos levam o nome do projeto.
 
 test.use({ storageState: estadoDe('prof') })
 

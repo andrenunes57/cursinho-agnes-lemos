@@ -53,7 +53,7 @@ export const DICA_TIPOS = 'PDF, imagem (JPG, PNG, WebP, GIF), Word, PowerPoint, 
 
 const POR_EXTENSAO = new Map(Object.entries(TIPOS).flatMap(([tipo, exts]) => exts.map((e) => [e, tipo] as const)))
 
-/** MIME do arquivo; se o navegador não informar (acontece no Android), deduz pela extensão. */
+/** MIME do arquivo; se o navegador não informar (acontece em alguns navegadores e sistemas), deduz pela extensão. */
 export function mimeDoArquivo(arquivo: { name: string; type: string }): string {
   if (arquivo.type) return arquivo.type
   const extensao = /\.([^.]+)$/.exec(arquivo.name)?.[1]?.toLowerCase() ?? ''

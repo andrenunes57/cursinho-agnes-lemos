@@ -5,8 +5,8 @@ import { CONTAS, estadoDe } from './contas.ts'
 // SPEC §13 F2 / §14.3 (acesso.spec.ts): guardas de rota, onboarding, pendente bloqueada,
 // menu por papel e axe em cada página, nos dois viewports.
 
-/** No celular, o menu completo fica atrás do botão "Menu" da barra inferior. */
-async function abrirMenuSeCelular(page: Page) {
+/** Em janela estreita (zoom alto), o menu completo fica atrás do botão "Menu" da barra inferior. */
+async function abrirMenuSeEstreito(page: Page) {
   const botaoMenu = page.getByRole('button', { name: 'Menu' })
   if (await botaoMenu.isVisible()) await botaoMenu.click()
 }
@@ -30,7 +30,7 @@ test.describe('sem sessão', () => {
 
 test.describe('conta nova', () => {
   test('login → onboarding → aguardando → sair', async ({ browser }, info) => {
-    const conta = info.project.name === 'celular' ? 'novo-celular' : 'novo-desktop'
+    const conta = info.project.name === 'zoom' ? 'novo-zoom' : 'novo-desktop'
     const contexto = await browser.newContext({ storageState: estadoDe(conta) })
     const page = await contexto.newPage()
 
@@ -97,7 +97,7 @@ test.describe('estudante ativa', () => {
   test('vê o Início e o menu de estudante, com nome social e pronomes', async ({ page }) => {
     await page.goto('./')
     await expect(page.getByRole('heading', { level: 1, name: 'Boas-vindas, Estudante Teste!' })).toBeVisible()
-    await abrirMenuSeCelular(page)
+    await abrirMenuSeEstreito(page)
     await expect(menu(page).getByRole('link', { name: 'Tarefas' }).first()).toBeVisible()
     await expect(menu(page).getByRole('link', { name: 'Pessoas' })).toHaveCount(0)
     await expect(page.getByText('Estudante Teste (ela/dela)').first()).toBeVisible()
@@ -133,7 +133,7 @@ test.describe('coordenação', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'Boas-vindas, Coordenação Teste!' })).toBeVisible()
     await semViolacoesGraves(page)
 
-    await abrirMenuSeCelular(page)
+    await abrirMenuSeEstreito(page)
     for (const item of ['Pessoas', 'Cronograma', 'Turmas', 'Disciplinas', 'Armazenamento', 'Configurações']) {
       await expect(menu(page).getByRole('link', { name: item }).first()).toBeVisible()
     }
@@ -157,7 +157,7 @@ test.describe('docente', () => {
 
   test('vê "Minhas aulas" e não vê as telas da coordenação', async ({ page }) => {
     await page.goto('./')
-    await abrirMenuSeCelular(page)
+    await abrirMenuSeEstreito(page)
     await expect(menu(page).getByRole('link', { name: 'Minhas aulas' }).first()).toBeVisible()
     await expect(menu(page).getByRole('link', { name: 'Pessoas' })).toHaveCount(0)
     await page.goto('./coordenacao/configuracoes')
