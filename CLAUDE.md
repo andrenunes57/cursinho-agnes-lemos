@@ -20,8 +20,9 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
   coordenação só leitura com a RPC recusando e Armazenamento.
 - **F7 em andamento** (14/11/2026). Feito: `e2e/a11y.spec.ts` (todas as rotas por papel), PWA com
   manifest estático (`public/manifest.webmanifest`, sem `vite-plugin-pwa`), `docs/` e README.
-  Falta: o job do cron-job.org (o dev cadastra; `docs/operacao.md` §2), o roteiro §14.4 no celular
-  (itens 1, 7, 8, 9 e instalar o PWA) e o deploy final.
+  Falta: o roteiro §14.4 no celular (itens 1, 7, 8, 9 e instalar o PWA) e o deploy final.
+- **Cron-job.org adiado pelo dev** (SPEC §19): sem ping, o Supabase pode pausar após ~7 dias sem uso.
+  Não cadastrar nem cobrar; se o dev decidir, seguir `docs/operacao.md` §2.
 - O Chrome do dev não reduz a janela abaixo de 1920 px: a conferência em 375 px é feita com a página
   num `<iframe>` de 375 px.
 - Testes que importam (direta ou indiretamente) `lib/supabase` precisam de `vi.mock('../lib/supabase', ...)`:

@@ -93,8 +93,8 @@ describe('MaterialForm (RF-11)', () => {
     expect(onEnviar).toHaveBeenCalledWith({ tipo: 'texto', titulo: 'Recado', conteudo: 'Tragam calculadora.' })
   })
 
-  it('mostra "Enviando…" com o botão desabilitado durante o upload', () => {
+  it('mostra "Enviando…" com o botão bloqueado durante o upload', () => {
     abrir({ enviando: true })
-    expect(screen.getByRole('button', { name: 'Enviando…' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Enviando…' })).toHaveAttribute('aria-disabled', 'true')
   })
 })

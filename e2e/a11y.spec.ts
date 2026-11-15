@@ -98,3 +98,21 @@ for (const [papel, { conta, rotas }] of Object.entries(ROTAS)) {
     }
   })
 }
+
+test.describe('teclado', () => {
+  test.use({ storageState: estadoDe('est') })
+
+  test('"Pular para o conteúdo" leva o foco ao <h1> e o próximo Tab segue no conteúdo', async ({ page }) => {
+    await page.goto('./perfil')
+    await expect(page.getByRole('heading', { level: 1, name: 'Meu perfil' })).toBeVisible()
+
+    await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: 'Pular para o conteúdo' })).toBeFocused()
+    await page.keyboard.press('Enter')
+    await expect(page.getByRole('heading', { level: 1, name: 'Meu perfil' })).toBeFocused()
+
+    await page.keyboard.press('Tab')
+    const dentroDoMain = await page.evaluate(() => !!document.activeElement?.closest('main'))
+    expect(dentroDoMain).toBe(true)
+  })
+})
