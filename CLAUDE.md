@@ -21,11 +21,11 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
 - **Piloto só no desktop** (decisão do dev, SPEC §19): sem PWA e sem simulação de celular. O layout
   de janela estreita (barra inferior, tabelas em cartões) **fica**: atende o zoom de 400% (WCAG 1.4.10).
   O E2E roda nos projetos `desktop` (1280×800) e `zoom` (320×640).
-- **F7 em andamento** (14/11/2026). Feito: `e2e/a11y.spec.ts` (todas as rotas por papel), `docs/` e README.
-  Itens 7 (teclado: login, chamada, entrega) e 9 do §14.4 feitos em produção (SPEC §19), com 3
-  correções de foco (`Button` com `aria-disabled`, "Pular para o conteúdo", `FocarAoAbrir` +
-  `lib/foco.ts`). Falta, no desktop: item 1 + onboarding só com teclado (conta Google nova) e
-  item 8 (Narrador do Windows, com o dev).
+- **F7 concluída** (15/11/2026): `e2e/a11y.spec.ts` (todas as rotas por papel), 3 correções de foco
+  (`Button` com `aria-disabled`, "Pular para o conteúdo", `FocarAoAbrir` + `lib/foco.ts`), `docs/`,
+  README e roteiro §14.4 completo no desktop (SPEC §19). Todas as fases do §13 estão concluídas.
+- Antes do go-live (fora das fases): transferência de contas (`docs/transferencia-de-contas.md`) e
+  e-mail da LGPD em `src/lib/contato.ts`.
 - Formulário aberto por botão na própria página: envolver em `ui/FocarAoAbrir`.
 - **Cron-job.org adiado pelo dev** (SPEC §19): sem ping, o Supabase pode pausar após ~7 dias sem uso.
   Não cadastrar nem cobrar; se o dev decidir, seguir `docs/operacao.md` §2.
