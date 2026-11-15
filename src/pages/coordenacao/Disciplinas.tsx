@@ -13,6 +13,7 @@ import { supabase } from '../../lib/supabase'
 import { validarNomeDisciplina } from '../../lib/validacoes'
 import { useResultado, type AoResultado } from './comum'
 import { chaves, useDisciplinas, type Disciplina } from './consultas'
+import { FocarAoAbrir } from '../../components/ui/FocarAoAbrir'
 
 const DUPLICADA = 'Já existe uma disciplina com esse nome.'
 
@@ -105,13 +106,15 @@ function CartaoDisciplina({ disciplina, avisar }: { disciplina: Disciplina; avis
         <Etiqueta tom={disciplina.ativa ? 'sucesso' : 'neutro'}>{disciplina.ativa ? 'Ativa' : 'Inativa'}</Etiqueta>
       </div>
       {editando ? (
-        <FormDisciplina
-          inicial={disciplina.nome}
-          textoBotao="Salvar disciplina"
-          enviando={renomear.isPending}
-          onEnviar={(nome) => renomear.mutate(nome)}
-          onCancelar={() => setEditando(false)}
-        />
+        <FocarAoAbrir>
+          <FormDisciplina
+            inicial={disciplina.nome}
+            textoBotao="Salvar disciplina"
+            enviando={renomear.isPending}
+            onEnviar={(nome) => renomear.mutate(nome)}
+            onCancelar={() => setEditando(false)}
+          />
+        </FocarAoAbrir>
       ) : (
         <div className="flex flex-wrap gap-2">
           <Button variante="secundario" aria-label={`Editar ${disciplina.nome}`} onClick={() => setEditando(true)}>
@@ -157,15 +160,17 @@ export function Disciplinas() {
       <Aviso tipo={resultado?.tipo}>{resultado?.texto}</Aviso>
 
       {criando ? (
-        <Card>
-          <h2 className="mb-4 text-lg font-semibold">Nova disciplina</h2>
-          <FormDisciplina
-            textoBotao="Criar disciplina"
-            enviando={criar.isPending}
-            onEnviar={(nome) => criar.mutate(nome)}
-            onCancelar={() => setCriando(false)}
-          />
-        </Card>
+        <FocarAoAbrir>
+          <Card>
+            <h2 className="mb-4 text-lg font-semibold">Nova disciplina</h2>
+            <FormDisciplina
+              textoBotao="Criar disciplina"
+              enviando={criar.isPending}
+              onEnviar={(nome) => criar.mutate(nome)}
+              onCancelar={() => setCriando(false)}
+            />
+          </Card>
+        </FocarAoAbrir>
       ) : (
         <Button className="self-start" onClick={() => setCriando(true)}>
           Nova disciplina

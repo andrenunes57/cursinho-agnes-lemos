@@ -116,3 +116,28 @@ test.describe('teclado', () => {
     expect(dentroDoMain).toBe(true)
   })
 })
+
+test.describe('teclado (docente)', () => {
+  test.use({ storageState: estadoDe('prof') })
+
+  test('"Nova tarefa" foca o 1º campo; "Cancelar" devolve o foco ao botão', async ({ page }) => {
+    await page.goto(`./docente/aulas/${fixtures().aulaId}?aba=tarefas`)
+    const nova = page.getByRole('button', { name: 'Nova tarefa' })
+    await nova.focus()
+    await page.keyboard.press('Enter')
+    await expect(page.getByLabel(/Título da tarefa/)).toBeFocused()
+
+    await page.getByRole('button', { name: 'Cancelar' }).focus()
+    await page.keyboard.press('Enter')
+    await expect(nova).toBeFocused()
+  })
+
+  test('"Salvar chamada" não perde o foco ao salvar', async ({ page }) => {
+    await page.goto(`./docente/aulas/${fixtures().aulaId}?aba=chamada`)
+    const salvar = page.getByRole('button', { name: 'Salvar chamada' })
+    await salvar.focus()
+    await page.keyboard.press('Enter')
+    await expect(page.getByRole('status').filter({ hasText: 'Chamada salva' })).toBeVisible()
+    await expect(salvar).toBeFocused()
+  })
+})

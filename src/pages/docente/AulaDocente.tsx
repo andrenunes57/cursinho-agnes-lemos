@@ -20,6 +20,7 @@ import { supabase } from '../../lib/supabase'
 import { useResultadoComAvisoDaNavegacao, type AoResultado } from '../coordenacao/comum'
 import { invalidarAulas, useDisciplinas, useTurmas } from '../coordenacao/consultas'
 import { useAula, useNomeDocente, type Aula } from '../consultasAulas'
+import { FocarAoAbrir } from '../../components/ui/FocarAoAbrir'
 
 const classeLink = 'font-semibold text-marca underline underline-offset-4'
 
@@ -83,18 +84,20 @@ function EdicaoDaAula({ aula, voltarPara, avisar }: { aula: Aula; voltarPara: st
       .filter((d) => d.ativa || d.id === aula.disciplina_id)
       .map((d) => ({ valor: d.id, rotulo: d.nome }))
     return (
-      <Card>
-        <h2 className="mb-4 text-lg font-semibold">Editar aula</h2>
-        <AulaForm
-          inicial={aula}
-          turmas={opcoesTurma}
-          disciplinas={opcoesDisciplina}
-          enviando={salvar.isPending}
-          textoBotao="Salvar aula"
-          onEnviar={(d) => salvar.mutate(d)}
-          onCancelar={() => setEditando(false)}
-        />
-      </Card>
+      <FocarAoAbrir>
+        <Card>
+          <h2 className="mb-4 text-lg font-semibold">Editar aula</h2>
+          <AulaForm
+            inicial={aula}
+            turmas={opcoesTurma}
+            disciplinas={opcoesDisciplina}
+            enviando={salvar.isPending}
+            textoBotao="Salvar aula"
+            onEnviar={(d) => salvar.mutate(d)}
+            onCancelar={() => setEditando(false)}
+          />
+        </Card>
+      </FocarAoAbrir>
     )
   }
 

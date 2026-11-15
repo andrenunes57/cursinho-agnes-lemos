@@ -37,6 +37,7 @@ import {
   type MembroEquipe,
   type Turma,
 } from './consultas'
+import { FocarAoAbrir } from '../../components/ui/FocarAoAbrir'
 
 type AulaDaSemana = DadosAula & {
   id: string
@@ -146,16 +147,18 @@ function CartaoAula({ aula, listas, hoje, avisar }: { aula: AulaDaSemana; listas
       </dl>
 
       {editando ? (
-        <AulaForm
-          inicial={aula}
-          turmas={opcoesTurma(listas.turmas, aula.turma_id)}
-          disciplinas={opcoesDisciplina(listas.disciplinas, aula.disciplina_id)}
-          docentes={opcoesDocente(listas.equipe, { id: aula.professor_id, nome: nomeDocente })}
-          enviando={salvar.isPending}
-          textoBotao="Salvar aula"
-          onEnviar={(d) => salvar.mutate(d)}
-          onCancelar={() => setEditando(false)}
-        />
+        <FocarAoAbrir>
+          <AulaForm
+            inicial={aula}
+            turmas={opcoesTurma(listas.turmas, aula.turma_id)}
+            disciplinas={opcoesDisciplina(listas.disciplinas, aula.disciplina_id)}
+            docentes={opcoesDocente(listas.equipe, { id: aula.professor_id, nome: nomeDocente })}
+            enviando={salvar.isPending}
+            textoBotao="Salvar aula"
+            onEnviar={(d) => salvar.mutate(d)}
+            onCancelar={() => setEditando(false)}
+          />
+        </FocarAoAbrir>
       ) : (
         <div className="flex flex-wrap gap-2">
           <Link
@@ -285,19 +288,21 @@ export function Cronograma() {
         </div>
 
         {criando ? (
-          <Card>
-            <h2 className="mb-4 text-lg font-semibold">Nova aula</h2>
-            <AulaForm
-              inicial={{ turma_id: turmaId, data: dataPadrao }}
-              turmas={opcoesTurma(lista)}
-              disciplinas={opcoesDisciplina(disciplinas.data)}
-              docentes={opcoesDocente(equipe.data)}
-              enviando={criar.isPending}
-              textoBotao="Criar aula"
-              onEnviar={(d) => criar.mutate(d)}
-              onCancelar={() => setCriando(false)}
-            />
-          </Card>
+          <FocarAoAbrir>
+            <Card>
+              <h2 className="mb-4 text-lg font-semibold">Nova aula</h2>
+              <AulaForm
+                inicial={{ turma_id: turmaId, data: dataPadrao }}
+                turmas={opcoesTurma(lista)}
+                disciplinas={opcoesDisciplina(disciplinas.data)}
+                docentes={opcoesDocente(equipe.data)}
+                enviando={criar.isPending}
+                textoBotao="Criar aula"
+                onEnviar={(d) => criar.mutate(d)}
+                onCancelar={() => setCriando(false)}
+              />
+            </Card>
+          </FocarAoAbrir>
         ) : (
           <Button className="self-start" onClick={() => setCriando(true)}>
             Nova aula

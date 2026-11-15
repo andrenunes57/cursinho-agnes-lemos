@@ -15,6 +15,7 @@ import { Confirmacao } from './ui/Confirmacao'
 import { EmptyState } from './ui/EmptyState'
 import { ErroComRetry } from './ui/ErroComRetry'
 import { Etiqueta } from './ui/Etiqueta'
+import { FocarAoAbrir } from './ui/FocarAoAbrir'
 
 const mensagem = (erro: unknown) => (erro instanceof ErroArquivos ? erro.message : mensagemDeErro(erro))
 
@@ -142,16 +143,18 @@ export function MateriaisDocente({ aula, podeEditar, podeExcluir, avisar }: Prop
       <h2 className="sr-only">Materiais</h2>
       {podeEditar &&
         (criando ? (
-          <Card>
-            <h2 className="mb-4 text-lg font-semibold">Novo material</h2>
-            <MaterialForm
-              maxBytes={api.maxBytes}
-              arquivosDisponiveis={api.configurada}
-              enviando={criar.isPending}
-              onEnviar={(d) => criar.mutate(d)}
-              onCancelar={() => setCriando(false)}
-            />
-          </Card>
+          <FocarAoAbrir>
+            <Card>
+              <h2 className="mb-4 text-lg font-semibold">Novo material</h2>
+              <MaterialForm
+                maxBytes={api.maxBytes}
+                arquivosDisponiveis={api.configurada}
+                enviando={criar.isPending}
+                onEnviar={(d) => criar.mutate(d)}
+                onCancelar={() => setCriando(false)}
+              />
+            </Card>
+          </FocarAoAbrir>
         ) : (
           <Button className="self-start" onClick={() => setCriando(true)}>
             Adicionar material

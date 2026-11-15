@@ -1,5 +1,6 @@
 import { useEffect, useRef, type MouseEvent } from 'react'
 import { Outlet, useLocation } from 'react-router'
+import { iniciarResgateDeFoco } from '../lib/foco'
 
 /**
  * Leva o foco ao <h1> a cada troca de rota (SPEC §5.3), para o leitor de tela anunciar a
@@ -36,6 +37,8 @@ function focarConteudo(evento: MouseEvent<HTMLAnchorElement>) {
 /** Raiz de todas as rotas: link "Pular para o conteúdo" + foco no título. */
 export function RaizApp() {
   useFocoNoTitulo()
+  // Foco que some junto com o elemento (formulário fechado, item excluído) volta para a página.
+  useEffect(() => iniciarResgateDeFoco(), [])
   return (
     <>
       <a

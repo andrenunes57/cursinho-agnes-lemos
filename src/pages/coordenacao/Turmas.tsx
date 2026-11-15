@@ -17,6 +17,7 @@ import { supabase } from '../../lib/supabase'
 import { validarAno, validarNomeTurma } from '../../lib/validacoes'
 import { plural, useResultado, type AoResultado } from './comum'
 import { chaves, invalidarPessoas, usePessoas, useTurmas, type Turma } from './consultas'
+import { FocarAoAbrir } from '../../components/ui/FocarAoAbrir'
 
 type DadosTurma = { nome: string; ano: number; ativa: boolean }
 
@@ -245,13 +246,15 @@ function CartaoTurma({ turma, avisar }: { turma: Turma; avisar: AoResultado }) {
       </p>
 
       {editando ? (
-        <FormTurma
-          inicial={turma}
-          textoBotao="Salvar turma"
-          enviando={salvar.isPending}
-          onEnviar={(d) => salvar.mutate(d)}
-          onCancelar={() => setEditando(false)}
-        />
+        <FocarAoAbrir>
+          <FormTurma
+            inicial={turma}
+            textoBotao="Salvar turma"
+            enviando={salvar.isPending}
+            onEnviar={(d) => salvar.mutate(d)}
+            onCancelar={() => setEditando(false)}
+          />
+        </FocarAoAbrir>
       ) : (
         <div className="flex flex-wrap gap-2">
           <Button variante="secundario" aria-label={`Editar ${turma.nome}`} onClick={() => setEditando(true)}>
@@ -297,15 +300,17 @@ export function Turmas() {
       <Aviso tipo={resultado?.tipo}>{resultado?.texto}</Aviso>
 
       {criando ? (
-        <Card>
-          <h2 className="mb-4 text-lg font-semibold">Nova turma</h2>
-          <FormTurma
-            textoBotao="Criar turma"
-            enviando={criar.isPending}
-            onEnviar={(d) => criar.mutate(d)}
-            onCancelar={() => setCriando(false)}
-          />
-        </Card>
+        <FocarAoAbrir>
+          <Card>
+            <h2 className="mb-4 text-lg font-semibold">Nova turma</h2>
+            <FormTurma
+              textoBotao="Criar turma"
+              enviando={criar.isPending}
+              onEnviar={(d) => criar.mutate(d)}
+              onCancelar={() => setCriando(false)}
+            />
+          </Card>
+        </FocarAoAbrir>
       ) : (
         <Button className="self-start" onClick={() => setCriando(true)}>
           Nova turma

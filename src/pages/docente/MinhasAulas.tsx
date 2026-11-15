@@ -16,6 +16,7 @@ import { supabase } from '../../lib/supabase'
 import { useResultadoComAvisoDaNavegacao } from '../coordenacao/comum'
 import { invalidarAulas, useDisciplinas, useTurmas } from '../coordenacao/consultas'
 import { useAulas } from '../consultasAulas'
+import { FocarAoAbrir } from '../../components/ui/FocarAoAbrir'
 
 /** /docente/aulas — minhas aulas (próximas e passadas) + "Nova aula" (RF-10). */
 export function MinhasAulas() {
@@ -73,24 +74,26 @@ export function MinhasAulas() {
     conteudo = (
       <>
         {criando ? (
-          <Card>
-            <h2 className="mb-4 text-lg font-semibold">Nova aula</h2>
-            {opcoesTurma.length === 0 ? (
-              <EmptyState titulo="Nenhuma turma ativa">
-                <p>Peça à coordenação para cadastrar ou reativar uma turma.</p>
-              </EmptyState>
-            ) : (
-              <AulaForm
-                inicial={{ professor_id: perfil?.id, data: hoje, turma_id: opcoesTurma.length === 1 ? opcoesTurma[0].valor : '' }}
-                turmas={opcoesTurma}
-                disciplinas={opcoesDisciplina}
-                enviando={criar.isPending}
-                textoBotao="Criar aula"
-                onEnviar={(d) => criar.mutate(d)}
-                onCancelar={() => setCriando(false)}
-              />
-            )}
-          </Card>
+          <FocarAoAbrir>
+            <Card>
+              <h2 className="mb-4 text-lg font-semibold">Nova aula</h2>
+              {opcoesTurma.length === 0 ? (
+                <EmptyState titulo="Nenhuma turma ativa">
+                  <p>Peça à coordenação para cadastrar ou reativar uma turma.</p>
+                </EmptyState>
+              ) : (
+                <AulaForm
+                  inicial={{ professor_id: perfil?.id, data: hoje, turma_id: opcoesTurma.length === 1 ? opcoesTurma[0].valor : '' }}
+                  turmas={opcoesTurma}
+                  disciplinas={opcoesDisciplina}
+                  enviando={criar.isPending}
+                  textoBotao="Criar aula"
+                  onEnviar={(d) => criar.mutate(d)}
+                  onCancelar={() => setCriando(false)}
+                />
+              )}
+            </Card>
+          </FocarAoAbrir>
         ) : (
           <Button className="self-start" onClick={() => setCriando(true)}>
             Nova aula

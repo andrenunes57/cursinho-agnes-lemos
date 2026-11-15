@@ -16,6 +16,7 @@ import { Confirmacao } from './ui/Confirmacao'
 import { EmptyState } from './ui/EmptyState'
 import { ErroComRetry } from './ui/ErroComRetry'
 import { Etiqueta } from './ui/Etiqueta'
+import { FocarAoAbrir } from './ui/FocarAoAbrir'
 
 type Props = {
   aula: Aula
@@ -115,15 +116,17 @@ export function TarefasDocente({ aula, podeEditar, podeExcluir, avisar }: Props)
       <h2 className="sr-only">Tarefas</h2>
       {podeEditar &&
         (criando ? (
-          <Card>
-            <h2 className="mb-4 text-lg font-semibold">Nova tarefa</h2>
-            <TarefaForm
-              enviando={criar.isPending}
-              textoBotao="Criar tarefa"
-              onEnviar={(d) => criar.mutate(d)}
-              onCancelar={() => setCriando(false)}
-            />
-          </Card>
+          <FocarAoAbrir>
+            <Card>
+              <h2 className="mb-4 text-lg font-semibold">Nova tarefa</h2>
+              <TarefaForm
+                enviando={criar.isPending}
+                textoBotao="Criar tarefa"
+                onEnviar={(d) => criar.mutate(d)}
+                onCancelar={() => setCriando(false)}
+              />
+            </Card>
+          </FocarAoAbrir>
         ) : (
           <Button className="self-start" onClick={() => setCriando(true)}>
             Nova tarefa
@@ -147,17 +150,19 @@ export function TarefasDocente({ aula, podeEditar, podeExcluir, avisar }: Props)
               <li key={t.id}>
                 <article className="flex flex-col gap-3 rounded-xl border border-borda bg-superficie p-4 shadow-sm">
                   {editando === t.id ? (
-                    <>
-                      <h3 className="text-lg font-semibold">Editar tarefa</h3>
-                      <TarefaForm
-                        inicial={t}
-                        avaliacaoTravada={temAvaliada}
-                        enviando={salvar.isPending}
-                        textoBotao="Salvar tarefa"
-                        onEnviar={(d) => salvar.mutate({ id: t.id, d })}
-                        onCancelar={() => setEditando(null)}
-                      />
-                    </>
+                    <FocarAoAbrir>
+                      <>
+                        <h3 className="text-lg font-semibold">Editar tarefa</h3>
+                        <TarefaForm
+                          inicial={t}
+                          avaliacaoTravada={temAvaliada}
+                          enviando={salvar.isPending}
+                          textoBotao="Salvar tarefa"
+                          onEnviar={(d) => salvar.mutate({ id: t.id, d })}
+                          onCancelar={() => setEditando(null)}
+                        />
+                      </>
+                    </FocarAoAbrir>
                   ) : (
                     <>
                       <div className="flex flex-wrap items-start justify-between gap-2">
