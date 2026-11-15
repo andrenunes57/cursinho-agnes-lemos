@@ -1,10 +1,22 @@
-import { createClient, type SupportedStorage } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient, type SupportedStorage } from '@supabase/supabase-js'
 import { randomBytes } from 'node:crypto'
 import { mkdir, writeFile } from 'node:fs/promises'
 import type { Database } from '../src/types/database.ts'
-import { anoSP } from '../src/lib/datas.ts'
+import { anoSP, hojeSP, somarDias } from '../src/lib/datas.ts'
 import { CONTA_E2E } from './apiArquivos.ts'
-import { CONTAS, estadoDe, PROJETOS, TURMA_MATERIAIS, turmaChamada, type NomeConta } from './contas.ts'
+import {
+  CONTAS,
+  estadoDe,
+  FIXTURES_A11Y,
+  PROJETOS,
+  TITULO_AULA_A11Y,
+  TITULO_TAREFA_A11Y,
+  TURMA_A11Y,
+  TURMA_MATERIAIS,
+  turmaChamada,
+  type FixturesA11y,
+  type NomeConta,
+} from './contas.ts'
 
 /**
  * SPEC §14.3: cria/atualiza as contas de teste no stack LOCAL pela Admin API (secret key local),
@@ -105,4 +117,53 @@ export default async function globalSetup() {
       .insert({ turma_id: turma.id, estudante_id: ids.get('est') as string })
     if (erroMatricula) throw erroMatricula
   }
+
+  await criarFixturesA11y(admin, ids.get('prof') as string, ids.get('est') as string)
+}
+
+/**
+ * Conteúdo das rotas com `:id` do a11y.spec.ts: uma aula de ontem da `prof` na TURMA_A11Y (com a
+ * `est` matriculada), 2 materiais publicados, 1 tarefa publicada, a entrega da `est` e a chamada.
+ */
+async function criarFixturesA11y(admin: SupabaseClient<Database>, profId: string, estId: string) {
+  const falhar = (error: unknown) => {
+    if (error) throw error
+  }
+
+  const { data: turma, error: e1 } = await admin.from('turmas').insert({ nome: TURMA_A11Y, ano: anoSP() }).select('id').single()
+  falhar(e1)
+  const { error: e2 } = await admin.from('matriculas').insert({ turma_id: turma!.id, estudante_id: estId })
+  falhar(e2)
+  const { data: disciplina, error: e3 } = await admin.from('disciplinas').select('id').eq('nome', 'Matemática').single()
+  falhar(e3)
+
+  const { data: aula, error: e4 } = await admin
+    .from('aulas')
+    .insert({ turma_id: turma!.id, disciplina_id: disciplina!.id, professor_id: profId, titulo: TITULO_AULA_A11Y, data: somarDias(hojeSP(), -1) })
+    .select('id')
+    .single()
+  falhar(e4)
+
+  const { error: e5 } = await admin.from('materiais').insert([
+    { aula_id: aula!.id, tipo: 'texto', titulo: 'Resumo da aula', conteudo: 'Funções do 1º grau: definição e gráfico.', publicado: true, ordem: 0 },
+    { aula_id: aula!.id, tipo: 'link', titulo: 'Leitura complementar', url: 'https://exemplo.org/leitura', publicado: true, ordem: 1 },
+  ])
+  falhar(e5)
+
+  const { data: tarefa, error: e6 } = await admin
+    .from('tarefas')
+    .insert({ aula_id: aula!.id, titulo: TITULO_TAREFA_A11Y, instrucoes: 'Resolva a lista 1.', tipo_avaliacao: 'devolutiva', publicada: true })
+    .select('id')
+    .single()
+  falhar(e6)
+
+  const { error: e7 } = await admin.from('entregas').insert({ tarefa_id: tarefa!.id, estudante_id: estId, comentario: 'Segue a minha resolução.' })
+  falhar(e7)
+  const { error: e8 } = await admin
+    .from('presencas')
+    .insert({ aula_id: aula!.id, estudante_id: estId, status: 'presente', registrado_por: profId })
+  falhar(e8)
+
+  const fixtures: FixturesA11y = { aulaId: aula!.id, tarefaId: tarefa!.id }
+  await writeFile(FIXTURES_A11Y, JSON.stringify(fixtures))
 }

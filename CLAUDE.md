@@ -17,7 +17,13 @@ Cursinho Popular Professor Agnes Lemos (Campinas-SP).
   Android (PDF + foto da câmera).
 - **F5 concluída** (14/11/2026), validada em produção nos 3 tipos de avaliação.
 - **F6 concluída** (14/11/2026), validada em produção: chamada e correção, % (50% em 2 aulas), CSV,
-  coordenação só leitura com a RPC recusando e Armazenamento. Próxima: **F7**.
+  coordenação só leitura com a RPC recusando e Armazenamento.
+- **F7 em andamento** (14/11/2026). Feito: `e2e/a11y.spec.ts` (todas as rotas por papel), PWA com
+  manifest estático (`public/manifest.webmanifest`, sem `vite-plugin-pwa`), `docs/` e README.
+  Falta: o job do cron-job.org (o dev cadastra; `docs/operacao.md` §2), o roteiro §14.4 no celular
+  (itens 1, 7, 8, 9 e instalar o PWA) e o deploy final.
+- O Chrome do dev não reduz a janela abaixo de 1920 px: a conferência em 375 px é feita com a página
+  num `<iframe>` de 375 px.
 - Testes que importam (direta ou indiretamente) `lib/supabase` precisam de `vi.mock('../lib/supabase', ...)`:
   no CI não há `.env.local`. Para reproduzir o CI: `VITE_SUPABASE_URL= npx vitest run`.
 - API de Arquivos: `npm run gas:push` e depois `npx clasp create-deployment -i <deployment id>` (§12.3.1),

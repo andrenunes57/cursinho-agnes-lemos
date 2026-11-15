@@ -44,3 +44,13 @@ export const TURMA_MATERIAIS = 'E2E Turma Materiais'
  * misturar as chamadas de celular e desktop, que rodam em paralelo. */
 export const PROJETOS = ['celular', 'desktop'] as const
 export const turmaChamada = (projeto: string) => `E2E Turma Chamada ${projeto}`
+
+/** Turma do a11y.spec.ts: o global-setup cria nela uma aula passada da `prof`, com material,
+ * tarefa, entrega e chamada da `est`, para as rotas com `:id` terem conteúdo. */
+export const TURMA_A11Y = 'E2E Turma A11y'
+export const TITULO_AULA_A11Y = 'E2E Aula A11y'
+export const TITULO_TAREFA_A11Y = 'E2E Tarefa A11y'
+
+/** Ids gravados pelo global-setup e lidos pelo a11y.spec.ts. */
+export const FIXTURES_A11Y = 'e2e/.auth/a11y.json'
+export type FixturesA11y = { aulaId: string; tarefaId: string }

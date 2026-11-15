@@ -425,7 +425,7 @@ As versões exatas são fixadas na F0 e registradas no §6.5.
 | Dados no cliente | `@supabase/supabase-js` v2 + `@tanstack/react-query` | Cache e estados de carregamento e erro |
 | Estilo | Tailwind CSS v4 (plugin `@tailwindcss/vite`) | Sem biblioteca de componentes pesada; componentes próprios em `src/components/ui` |
 | Ícones | `lucide-react` | Importação por ícone |
-| PWA (P1) | `vite-plugin-pwa` | Só manifest + ícones, sem cache offline |
+| PWA (P1) | `public/manifest.webmanifest` escrito à mão (F7; §19) | Só manifest + ícones, sem service worker nem cache offline |
 | Banco/Auth/API | Supabase (Postgres, PostgREST, GoTrue) | CLI `supabase` como devDependency (`npx supabase …`) |
 | Arquivos | Google Apps Script (V8) + DriveApp | Versionado em `apps-script/` com `@google/clasp` |
 | Testes | pgTAP (`supabase test db`), Vitest + Testing Library, Playwright + `@axe-core/playwright` | §14 |
@@ -493,7 +493,7 @@ Versões instaladas na F0 (13/11/2026), todas exatas no `package.json` (`.npmrc`
 | oxlint | 1.93.0 |
 | GitHub Actions | checkout@v7, setup-node@v7, configure-pages@v6, upload-pages-artifact@v5, deploy-pages@v5 |
 | @google/clasp | 3.4.1 (F4) |
-| vite-plugin-pwa (P1) | _(F7)_ |
+| PWA (P1) | sem dependência: manifest estático (F7) |
 | lucide-react | 1.72.0 (F2) |
 
 ---
@@ -1453,7 +1453,11 @@ Guardar no Drive do cursinho, numa **pasta restrita à coordenação**. **Nunca*
 | 14/11/2026 | **F6 implementada** (DoD local verde): Vitest 176/176; E2E + axe 36/36 (celular e desktop; o `chamada.spec.ts` usa uma turma por projeto, criada no global-setup, e cobre aula futura, chamada salva e corrigida, relatórios da docente e da coordenação, CSV baixado, chamada só leitura para a coordenação e exclusão de um órfão); pgTAP 244/244; bundle inicial de 207,3 KB gzip. Numa das execuções completas, o Chromium caiu (`Target crashed`, worker com código 0xC0000409) e as execuções seguintes passaram; parece instabilidade do navegador no Windows, não do app. Falta o DoD em produção. | Implementação (F6) |
 | 14/11/2026 | **F6 concluída.** Em produção, via Claude in Chrome: a "Docente Produção" fez a chamada da aula de 14/11 (a "Estudante Produção" ausente), recarregou, corrigiu para presente e recarregou de novo; também registrou uma falta na aula de 13/11. O relatório da docente, o `/frequencia` da estudante e o relatório da coordenação mostram 50,0% (1 presença ÷ 2 aulas com chamada, conta manual); com `?de=2026-11-14`, 100,0% (1 de 1). O CSV baixado tem BOM UTF-8, `;` e "50,0"; a coluna Pronomes saiu vazia porque a estudante de produção não tem pronomes cadastrados. A coordenação vê a chamada só para leitura, sem rádios e sem "Salvar chamada"; a chamada direta de `registrar_chamada` pela API com a sessão dela foi recusada (403, 42501, "Só a pessoa docente da aula pode fazer a chamada.") e o registro não mudou. Armazenamento: 278,6 MB de 15 GB (1,8%) na conta drive-01, com 2 materiais (457,8 KB) + 1 entrega (4,6 KB) e nenhum órfão. Em 375 px, chamada, relatórios, `/frequencia` e Armazenamento sem rolagem horizontal. **Bug achado e corrigido:** digitar a data no filtro pelo teclado apagava o campo, porque `ehDataISO` usava `Date.UTC`, que trata os anos de 0 a 99 como 1900 + ano, e recusava o valor intermediário "0002-11-14" que o `type="date"` produz enquanto o ano é digitado. Agora usa `setUTCFullYear`, com um Vitest novo (177/177). | Implementação (F6) |
 | 14/11/2026 | **Filtro de data, segunda causa.** Conferido em produção depois do push: o `0002-11-14` passou a ser aceito, mas o campo ainda se apagava no segundo dígito do ano. Instrumentado o `<input>`, apareceu a causa: o campo era controlado pela URL e, como o `setSearchParams` não é síncrono, o React devolvia o valor antigo ao DOM logo depois de cada `onChange`; esse valor zerava o buffer do ano no Chrome, a tecla seguinte recomeçava em "0000" e o Chrome emitia `""`. Agora as datas do `RelatorioFrequencia` ficam em estado local e a URL só espelha o filtro (com `replace`, a URL não muda por fora com a página aberta). O E2E não pegava porque o `.fill()` grava a data inteira; o `chamada.spec.ts` agora digita tecla a tecla (dia = mês, porque o Chromium do Playwright mostra mm/dd/aaaa mesmo com `locale` pt-BR). O teste falha sem a correção e passa com ela. E2E 36/36, Vitest 177/177, pgTAP 244/244. | Implementação (F6) |
-
+| 14/11/2026 | Conferência em 375 px do relatório de frequência em produção, depois do deploy do `0aeadc8`. O Chrome do dev não reduz a janela (ela fica em 1920 px), então a medição foi feita como na F5, com a página num `<iframe>` de 375 px: sem rolagem horizontal; digitar `11142026` no "De", tecla a tecla, mantém `2026-11-14`, põe `?de=2026-11-14` na URL e mostra 100,0%; apagar volta para "todo o período" e 50,0%. | Implementação (F7) |
+| 14/11/2026 | F7, PWA (RF-28): no lugar do `vite-plugin-pwa` (§6.3), um `public/manifest.webmanifest` escrito à mão, com ícones PNG 192, 512 e *maskable* 512 e o `apple-touch-icon`, gerados a partir do desenho do `favicon.svg`. Não há service worker: o RF-28 não pede modo offline, e o Chrome Android instala o app só com o manifest. `start_url` e `scope` são relativos ao manifest (`./`), por isso continuam certos se a base do Pages mudar na transferência. | Usuário (recomendação aceita) |
+| 14/11/2026 | F7: `e2e/a11y.spec.ts` faz a fumaça por papel. Para pendente, inativa, estudante, docente e coordenação, abre cada rota do §11 (abas incluídas) e confere o `<h1>`, o axe (0 serious/critical) e a ausência de rolagem horizontal, em 375×667 e 1280×800. As rotas com `:id` usam a "E2E Turma A11y", criada pelo global-setup com uma aula de ontem da `prof`, 2 materiais publicados, 1 tarefa publicada, a entrega e a presença da `est`. As rotas públicas ficam no `smoke.spec.ts` (agora também sem rolagem horizontal, e com o teste do manifest); `/primeiro-acesso` fica no `acesso.spec.ts`. | Implementação (F7) |
+| 14/11/2026 | F7: o ping de produção (`GET /rest/v1/rpc/ping` com `apikey`) responde 200 `"ok"`. O job do cron-job.org é cadastrado pelo dev, seguindo `docs/operacao.md` §2. | Usuário |
+D
 ---
 
 ## Apêndice A — Limites dos planos gratuitos
